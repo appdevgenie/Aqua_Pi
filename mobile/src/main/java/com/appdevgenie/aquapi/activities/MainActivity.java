@@ -1,7 +1,9 @@
-package com.appdevgenie.aquapi;
+package com.appdevgenie.aquapi.activities;
 
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -10,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.appdevgenie.aquapi.R;
 import com.appdevgenie.aquapi.models.PiStatus;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
@@ -30,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
 
-    private TextView tvIP, tvPiStatus, tvArduinoStatus, tvRoomTemp, tvSystemTemp, tvWaterTemp;
+    private TextView tvIP, tvPiStatus, tvTime, tvArduinoStatus, tvRoomTemp, tvSystemTemp, tvWaterTemp;
     private ImageView ivIp, ivPiStatus, ivArduinoStatus;
-    ProgressBar pbRoom, pbSystem, pbWater;
+    private ProgressBar pbStatus, pbTemps, pbRoom, pbSystem, pbWater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
         tvIP = findViewById(R.id.tvIpAddress);
         tvPiStatus = findViewById(R.id.tvPiStatus);
+        tvTime = findViewById(R.id.tvTime);
         tvArduinoStatus = findViewById(R.id.tvArduinoStatus);
         ivIp = findViewById(R.id.ivIpAddress);
         ivPiStatus = findViewById(R.id.ivPiStatus);
         ivArduinoStatus = findViewById(R.id.ivArduinoStatus);
+        pbStatus = findViewById(R.id.pbStatus);
+        pbTemps = findViewById(R.id.pbTemps);
 
         ConstraintLayout clRoomTemp = findViewById(R.id.includeRoomTemp);
         TextView tvRoomTitle = clRoomTemp.findViewById(R.id.tvTempTitle);
@@ -60,13 +67,11 @@ public class MainActivity extends AppCompatActivity {
         tvRoomTemp = clRoomTemp.findViewById(R.id.tvTemperature);
         pbRoom = clRoomTemp.findViewById(R.id.pbTemperature);
 
-
         ConstraintLayout clSystemTemp = findViewById(R.id.includeSystemTemp);
         TextView tvSystemTitle = clSystemTemp.findViewById(R.id.tvTempTitle);
         tvSystemTitle.setText("System");
         tvSystemTemp = clSystemTemp.findViewById(R.id.tvTemperature);
         pbSystem = clSystemTemp.findViewById(R.id.pbTemperature);
-
 
         ConstraintLayout clWaterTemp = findViewById(R.id.includeWaterTemp);
         TextView tvWaterTitle = clWaterTemp.findViewById(R.id.tvTempTitle);
@@ -79,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupFirebaseListener() {
 
+        pbStatus.setVisibility(View.VISIBLE);
+        pbTemps.setVisibility(View.VISIBLE);
+
         Query query = databaseReference
                 .child(DB_CHILD_STATUS);
 
@@ -86,12 +94,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChanged: " + dataSnapshot.getValue());
+                pbStatus.setVisibility(View.GONE);
+                pbTemps.setVisibility(View.GONE);
+
                 PiStatus piStatus = dataSnapshot.getValue(PiStatus.class);
                 if (piStatus != null) {
                     if (piStatus.isOnlinePi()) {
 
                         ivPiStatus.setImageResource(R.drawable.led_green);
-                        tvPiStatus.setText("Pi connected");
+                        tvPiStatus.setText("Pi connected: ");
+                        tvTime.setText(getFormattedDate(piStatus.getLastOnlinePi()));
                         ivIp.setImageResource(R.drawable.led_green);
                         tvIP.setText(piStatus.getIp());
 
@@ -118,11 +130,19 @@ public class MainActivity extends AppCompatActivity {
                     } else {
 
                         ivPiStatus.setImageResource(R.drawable.led_red);
-                        tvPiStatus.setText("Offline");
+                        tvPiStatus.setText("Offline: ");
+                        tvTime.setText(getFormattedDate(piStatus.getLastOnlinePi()));
                         ivIp.setImageResource(R.drawable.led_red);
                         tvIP.setText("Pi not connected");
                         ivArduinoStatus.setImageResource(R.drawable.led_red);
                         tvArduinoStatus.setText("Arduino not connected");
+
+                        pbSystem.setProgress(0);
+                        pbRoom.setProgress(0);
+                        pbWater.setProgress(0);
+                        tvWaterTemp.setText("- - . - -");
+                        tvRoomTemp.setText("- - . - -");
+                        tvSystemTemp.setText("- - . - -");
                     }
                 }
             }
@@ -130,7 +150,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                pbStatus.setVisibility(View.GONE);
+                pbTemps.setVisibility(View.GONE);
             }
         });
+    }
+
+    private String getFormattedDate(long timestamp) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        Calendar now = Calendar.getInstance();
+
+        final String timeFormatString = "HH:mm";
+        final String dateTimeFormatString = "EEE, MMM d, HH:mm";
+
+        if (now.get(Calendar.DATE) == calendar.get(Calendar.DATE)) {
+            return DateFormat.format(timeFormatString, calendar).toString();
+        } else if (now.get(Calendar.DATE) - calendar.get(Calendar.DATE) == 1) {
+            return "yesterday " + DateFormat.format(timeFormatString, calendar);
+        } else if (now.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)) {
+            return DateFormat.format(dateTimeFormatString, calendar).toString();
+        } else {
+            return DateFormat.format("MMM dd yyyy, HH:mm", calendar).toString();
+        }
     }
 }

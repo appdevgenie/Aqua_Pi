@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.appdevgenie.aquapi.MainActivity">
+        <activity android:name="com.appdevgenie.aquapi.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
