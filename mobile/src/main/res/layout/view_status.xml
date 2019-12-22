@@ -25,7 +25,7 @@
         app:srcCompat="@drawable/ic_raspberry_pi" />
 
     <ImageView
-        android:id="@+id/ivConnectionStatus"
+        android:id="@+id/ivPiStatus"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
@@ -36,7 +36,7 @@
         app:srcCompat="@drawable/led_off" />
 
     <TextView
-        android:id="@+id/tvConnectionStatus"
+        android:id="@+id/tvPiStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -44,10 +44,10 @@
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         app:fontFamily="sans-serif-light"
         android:textColor="@color/colorText"
-        app:layout_constraintBottom_toBottomOf="@+id/ivConnectionStatus"
-        app:layout_constraintStart_toEndOf="@+id/ivConnectionStatus"
-        app:layout_constraintTop_toTopOf="@+id/ivConnectionStatus"
-        tools:text="Connected" />
+        app:layout_constraintBottom_toBottomOf="@+id/ivPiStatus"
+        app:layout_constraintStart_toEndOf="@+id/ivPiStatus"
+        app:layout_constraintTop_toTopOf="@+id/ivPiStatus"
+        tools:text="Pi connected" />
 
     <ImageView
         android:id="@+id/ivIpAddress"
@@ -57,7 +57,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivConnectionStatus"
+        app:layout_constraintTop_toBottomOf="@+id/ivPiStatus"
         app:srcCompat="@drawable/led_off" />
 
     <TextView
@@ -88,7 +88,7 @@
         app:srcCompat="@drawable/led_off" />
 
     <TextView
-        android:id="@+id/tvStatusPower"
+        android:id="@+id/tvArduinoStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

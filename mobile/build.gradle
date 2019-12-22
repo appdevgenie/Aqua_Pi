@@ -10,7 +10,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.appdevgenie.mobile"
+        applicationId "com.appdevgenie.aquapi"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
@@ -38,6 +38,10 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    //usb serial
-    implementation 'com.github.felHR85:UsbSerial:6.1.0'
+    //firebase
+    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.google.firebase:firebase-database:19.2.0'
+
 }
+
+apply plugin: 'com.google.gms.google-services'

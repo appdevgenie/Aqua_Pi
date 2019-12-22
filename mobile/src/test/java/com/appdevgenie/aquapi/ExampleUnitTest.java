@@ -1,4 +1,4 @@
-package com.appdevgenie.mobile;
+package com.appdevgenie.aquapi;
 
 import org.junit.Test;
 
