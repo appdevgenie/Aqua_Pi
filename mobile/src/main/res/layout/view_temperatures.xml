@@ -3,36 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    tools:context=".MainActivity">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/item_background">
 
 
     <include
-        android:id="@+id/includeStatus"
-        layout="@layout/view_status"
+        layout="@layout/include_temperature"
+        android:id="@+id/includeWaterTemp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        layout="@layout/view_temperatures"
+        layout="@layout/include_temperature"
+        android:id="@+id/includeSystemTemp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/includeStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/includeWaterTemp" />
+
+    <include
+        layout="@layout/include_temperature"
+        android:id="@+id/includeRoomTemp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/includeSystemTemp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

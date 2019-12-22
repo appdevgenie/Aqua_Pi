@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape>
+            <!--<solid android:color="#999" />-->
+            <gradient
+                android:centerColor="#1800FF00"
+                android:endColor="#18FF0000"
+                android:startColor="#180000FF" />
+            <size
+                android:width="10dp"
+                android:height="10dp" />
+            <corners android:radius="1dp" />
+        </shape>
+        <!--<shape>
+            <gradient
+                android:startColor="#444"
+                android:centerColor="#999"
+                android:endColor="#444"
+                android:angle="-90" />
+            <corners android:radius="2dp" />
+            <stroke
+                android:width="1dp"
+                android:color="#aaa" />
+            <padding
+                android:bottom="1dp"
+                android:left="1dp"
+                android:right="1dp"
+                android:top="1dp"/>
+        </shape>-->
+    </item>
+    <item android:id="@android:id/progress">
+        <clip>
+            <layer-list>
+                <item>
+                    <color android:color="#00000000" />
+                </item>
+                <item
+                    android:bottom="1dp"
+                    android:left="1dp"
+                    android:right="1dp"
+                    android:top="1dp">
+                    <shape>
+                        <gradient
+                            android:centerColor="#05FF05"
+                            android:endColor="#FF0000"
+                            android:startColor="#0000FF" />
+                        <size
+                            android:width="10dp"
+                            android:height="10dp" />
+                        <corners android:radius="1dp" />
+                    </shape>
+                </item>
+            </layer-list>
+        </clip>
+    </item>
+</layer-list>
