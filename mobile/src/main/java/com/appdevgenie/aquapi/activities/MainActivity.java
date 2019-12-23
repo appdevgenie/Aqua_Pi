@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.appdevgenie.aquapi.R;
 import com.appdevgenie.aquapi.models.PiStatus;
+import com.appdevgenie.aquapi.models.Temperatures;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +27,7 @@ import java.util.Locale;
 
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_STATUS;
+import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_TEMPERATURES;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
 
     private TextView tvIP, tvPiStatus, tvTime, tvArduinoStatus, tvRoomTemp, tvSystemTemp, tvWaterTemp;
-    private ImageView ivIp, ivPiStatus, ivArduinoStatus;
+    private ImageView ivIp, ivPiStatus, ivArduinoStatus, ivTempLed;
     private ProgressBar pbStatus, pbTemps, pbRoom, pbSystem, pbWater;
 
     @Override
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         ivArduinoStatus = findViewById(R.id.ivArduinoStatus);
         pbStatus = findViewById(R.id.pbStatus);
         pbTemps = findViewById(R.id.pbTemps);
+        ivTempLed = findViewById(R.id.ivTempLed);
 
         ConstraintLayout clRoomTemp = findViewById(R.id.includeRoomTemp);
         TextView tvRoomTitle = clRoomTemp.findViewById(R.id.tvTempTitle);
@@ -87,10 +90,13 @@ public class MainActivity extends AppCompatActivity {
         pbStatus.setVisibility(View.VISIBLE);
         pbTemps.setVisibility(View.VISIBLE);
 
-        Query query = databaseReference
+        Query queryStatus = databaseReference
                 .child(DB_CHILD_STATUS);
 
-        query.addValueEventListener(new ValueEventListener() {
+        Query queryTemps = databaseReference
+                .child(DB_CHILD_TEMPERATURES);
+
+        queryStatus.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChanged: " + dataSnapshot.getValue());
@@ -107,7 +113,36 @@ public class MainActivity extends AppCompatActivity {
                         ivIp.setImageResource(R.drawable.led_green);
                         tvIP.setText(piStatus.getIp());
 
-                        float tempRoom = piStatus.getTempRoom();
+                        queryTemps.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                //pbTemps.setVisibility(View.GONE);
+
+                                Temperatures temperatures = dataSnapshot.getValue(Temperatures.class);
+                                if (temperatures != null) {
+                                    ivTempLed.setImageResource(R.drawable.led_green);
+
+                                    float tempRoom = temperatures.getTempRoom();
+                                    tvRoomTemp.setText(String.format(Locale.getDefault(), "%.2f", tempRoom));
+                                    pbRoom.setProgress((int) tempRoom + 5);
+
+                                    float tempWater = temperatures.getTempWater();
+                                    tvWaterTemp.setText(String.format(Locale.getDefault(), "%.2f", tempWater));
+                                    pbWater.setProgress((int) tempWater + 5);
+
+                                    float tempSystem = temperatures.getTempSystem();
+                                    tvSystemTemp.setText(String.format(Locale.getDefault(), "%.2f", tempSystem));
+                                    pbSystem.setProgress((int) tempSystem + 5);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                pbTemps.setVisibility(View.GONE);
+                            }
+                        });
+
+                        /*float tempRoom = piStatus.getTempRoom();
                         tvRoomTemp.setText(String.format(Locale.getDefault(), "%.2f", tempRoom));
                         pbRoom.setProgress((int) tempRoom + 5);
 
@@ -117,12 +152,12 @@ public class MainActivity extends AppCompatActivity {
 
                         float tempSystem = piStatus.getTempSystem();
                         tvSystemTemp.setText(String.format(Locale.getDefault(), "%.2f", tempSystem));
-                        pbSystem.setProgress((int) tempSystem + 5);
+                        pbSystem.setProgress((int) tempSystem + 5);*/
 
-                        if(piStatus.isOnlineArduino()){
+                        if (piStatus.isOnlineArduino()) {
                             ivArduinoStatus.setImageResource(R.drawable.led_green);
                             tvArduinoStatus.setText("Arduino connected");
-                        }else{
+                        } else {
                             ivArduinoStatus.setImageResource(R.drawable.led_red);
                             tvArduinoStatus.setText("Arduino not connected");
                         }
@@ -136,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                         tvIP.setText("Pi not connected");
                         ivArduinoStatus.setImageResource(R.drawable.led_red);
                         tvArduinoStatus.setText("Arduino not connected");
+                        ivTempLed.setImageResource(R.drawable.led_red);
 
                         pbSystem.setProgress(0);
                         pbRoom.setProgress(0);
@@ -154,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
                 pbTemps.setVisibility(View.GONE);
             }
         });
+
+
     }
 
     private String getFormattedDate(long timestamp) {

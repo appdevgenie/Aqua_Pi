@@ -7,22 +7,17 @@ public class PiStatus {
     private boolean onlinePi;
     private long lastOnlineArduino;
     private boolean onlineArduino;
-    private float tempRoom;
-    private float tempSystem;
-    private float tempWater;
+
 
     public PiStatus() {
     }
 
-    public PiStatus(String ip, long lastOnlinePi, boolean onlinePi, long lastOnlineArduino, boolean onlineArduino, float tempRoom, float tempSystem, float tempWater) {
+    public PiStatus(String ip, long lastOnlinePi, boolean onlinePi, long lastOnlineArduino, boolean onlineArduino) {
         this.ip = ip;
         this.lastOnlinePi = lastOnlinePi;
         this.onlinePi = onlinePi;
         this.lastOnlineArduino = lastOnlineArduino;
         this.onlineArduino = onlineArduino;
-        this.tempRoom = tempRoom;
-        this.tempSystem = tempSystem;
-        this.tempWater = tempWater;
     }
 
     public String getIp() {
@@ -63,29 +58,5 @@ public class PiStatus {
 
     public void setOnlineArduino(boolean onlineArduino) {
         this.onlineArduino = onlineArduino;
-    }
-
-    public float getTempRoom() {
-        return tempRoom;
-    }
-
-    public void setTempRoom(float tempRoom) {
-        this.tempRoom = tempRoom;
-    }
-
-    public float getTempSystem() {
-        return tempSystem;
-    }
-
-    public void setTempSystem(float tempSystem) {
-        this.tempSystem = tempSystem;
-    }
-
-    public float getTempWater() {
-        return tempWater;
-    }
-
-    public void setTempWater(float tempWater) {
-        this.tempWater = tempWater;
     }
 }
