@@ -37,7 +37,7 @@ dependencies {
     compileOnly 'com.google.android.things:androidthings:1.0'
 
     //usb serial
-    //implementation 'com.github.felHR85:UsbSerial:6.1.0'
+    implementation 'com.github.felHR85:UsbSerial:6.1.0'
 
     //firebase
     implementation 'com.google.firebase:firebase-core:17.2.1'

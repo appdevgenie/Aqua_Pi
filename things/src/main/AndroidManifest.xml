@@ -23,7 +23,20 @@
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+            <!-- Launch when USB device attached -->
+            <!--<intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />-->
         </activity>
+        <service
+            android:name="com.appdevgenie.aquapi.service.UsbService"
+            android:enabled="true">
+        </service>
     </application>
 
 </manifest>
