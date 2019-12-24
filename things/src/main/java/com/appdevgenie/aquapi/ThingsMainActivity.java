@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 
 import com.appdevgenie.aquapi.models.Temperatures;
 import com.appdevgenie.aquapi.service.UsbService;
+import com.google.android.things.device.DeviceManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -147,6 +148,8 @@ public class ThingsMainActivity extends Activity {
         Log.d(TAG, "onCreate");
 
         mHandler = new MyHandler(this);
+
+        //DeviceManager.getInstance().reboot();
 
         init();
     }
@@ -386,6 +389,10 @@ public class ThingsMainActivity extends Activity {
                 case UsbService.DSR_CHANGE:
                     Toast.makeText(mActivity.get(), "DSR_CHANGE", Toast.LENGTH_LONG).show();
                     break;
+                /*case UsbService.SYNC_READ:
+                    *//*String buffer = (String) msg.obj;
+                    mActivity.get().display.append(buffer);*//*
+                    break;*/
             }
         }
     }

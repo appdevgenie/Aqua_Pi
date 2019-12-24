@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_angel" />
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/ivTempLed"
         android:layout_width="20dp"
         android:layout_height="20dp"
@@ -47,24 +47,28 @@
         android:textColor="@color/colorText"
         app:layout_constraintBottom_toBottomOf="@+id/ivTempLed"
         app:layout_constraintStart_toEndOf="@+id/ivTempLed"
-        app:layout_constraintTop_toTopOf="@+id/ivTempLed" />
+        app:layout_constraintTop_toTopOf="@+id/ivTempLed" />-->
 
     <include
         android:id="@+id/includeWaterTemp"
         layout="@layout/include_temperature"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/includeSystemTemp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivTempLed" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
-        layout="@layout/include_temperature"
         android:id="@+id/includeSystemTemp"
+        layout="@layout/include_temperature"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/includeRoomTemp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/includeWaterTemp" />
 
@@ -76,7 +80,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/includeSystemTemp" />
 

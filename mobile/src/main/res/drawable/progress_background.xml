@@ -4,9 +4,9 @@
         <shape>
             <!--<solid android:color="#999" />-->
             <gradient
-                android:centerColor="#1800FF00"
+                android:centerColor="#18799900"
                 android:endColor="#18FF0000"
-                android:startColor="#180000FF" />
+                android:startColor="#18008686" />
             <size
                 android:width="10dp"
                 android:height="10dp" />
@@ -42,9 +42,9 @@
                     android:top="1dp">
                     <shape>
                         <gradient
-                            android:centerColor="#05FF05"
+                            android:centerColor="#799900"
                             android:endColor="#FF0000"
-                            android:startColor="#0000FF" />
+                            android:startColor="#008686" />
                         <size
                             android:width="10dp"
                             android:height="10dp" />

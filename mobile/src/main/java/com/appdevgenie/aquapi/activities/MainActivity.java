@@ -1,12 +1,22 @@
 package com.appdevgenie.aquapi.activities;
 
+import android.animation.ArgbEvaluator;
+import android.animation.IntEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +39,7 @@ import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_STATUS;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_TEMPERATURES;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = "MainActivity";
 
@@ -37,8 +47,11 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
 
     private TextView tvIP, tvPiStatus, tvTime, tvArduinoStatus, tvRoomTemp, tvSystemTemp, tvWaterTemp;
-    private ImageView ivIp, ivPiStatus, ivArduinoStatus, ivTempLed;
+    private ImageView ivIp, ivPiStatus, ivArduinoStatus, ivBypass, ivLight;
     private ProgressBar pbStatus, pbTemps, pbRoom, pbSystem, pbWater;
+
+    private ToggleButton tbBypass, tbLight;
+    //AnimationDrawable animationDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +75,22 @@ public class MainActivity extends AppCompatActivity {
         ivArduinoStatus = findViewById(R.id.ivArduinoStatus);
         pbStatus = findViewById(R.id.pbStatus);
         pbTemps = findViewById(R.id.pbTemps);
-        ivTempLed = findViewById(R.id.ivTempLed);
+        ivBypass = findViewById(R.id.ivControlBypass);
+        ivLight = findViewById(R.id.ivControlLight);
+        tbBypass = findViewById(R.id.tbBypass);
+        tbBypass.setOnCheckedChangeListener(this);
+        tbLight = findViewById(R.id.tbLight);
+        tbLight.setOnCheckedChangeListener(this);
+        if(!tbBypass.isChecked()){
+            tbLight.setClickable(false);
+            tbLight.setEnabled(false);
+        }else{
+            tbLight.setClickable(true);
+            tbLight.setEnabled(true);
+        }
+
+        tbLight.setChecked(true);
+        //ivTempLed = findViewById(R.id.ivTempLed);
 
         ConstraintLayout clRoomTemp = findViewById(R.id.includeRoomTemp);
         TextView tvRoomTitle = clRoomTemp.findViewById(R.id.tvTempTitle);
@@ -82,8 +110,49 @@ public class MainActivity extends AppCompatActivity {
         tvWaterTemp = clWaterTemp.findViewById(R.id.tvTemperature);
         pbWater = clWaterTemp.findViewById(R.id.pbTemperature);
 
+        /*ImageView imageView = findViewById(R.id.ivLed);
+        imageView.setBackgroundResource(R.drawable.animation);
+        //animationDrawable = (AnimationDrawable) imageView.getBackground();
+        imageView.post(new Runnable() {
+            @Override
+            public void run() {
+                animationDrawable = (AnimationDrawable) imageView.getBackground();
+                animationDrawable.start();
+            }
+        });
+
+        Button button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animationDrawable.start();
+            }
+        });
+
+        Button button2 = findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                animationDrawable.stop();
+            }
+        });*/
+
+        /*ObjectAnimator objAnimator = ObjectAnimator.ofInt(imageView, "alpha",R.drawable.led_off, R.drawable.led_red,
+                R.drawable.led_off);
+        objAnimator.setDuration(1000);
+        objAnimator.setRepeatCount(100);
+        //objAnimator.setRepeatMode(Animation.REVERSE);
+        objAnimator.setRepeatCount(Animation.INFINITE);
+        objAnimator.start();*/
+
         setupFirebaseListener();
     }
+
+    /*@Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+    }*/
 
     private void setupFirebaseListener() {
 
@@ -120,19 +189,19 @@ public class MainActivity extends AppCompatActivity {
 
                                 Temperatures temperatures = dataSnapshot.getValue(Temperatures.class);
                                 if (temperatures != null) {
-                                    ivTempLed.setImageResource(R.drawable.led_green);
+                                    //ivTempLed.setImageResource(R.drawable.led_green);
 
                                     float tempRoom = temperatures.getTempRoom();
                                     tvRoomTemp.setText(String.format(Locale.getDefault(), "%.2f", tempRoom));
-                                    pbRoom.setProgress((int) tempRoom + 5);
+                                    pbRoom.setProgress((int) tempRoom);
 
                                     float tempWater = temperatures.getTempWater();
                                     tvWaterTemp.setText(String.format(Locale.getDefault(), "%.2f", tempWater));
-                                    pbWater.setProgress((int) tempWater + 5);
+                                    pbWater.setProgress((int) tempWater);
 
                                     float tempSystem = temperatures.getTempSystem();
                                     tvSystemTemp.setText(String.format(Locale.getDefault(), "%.2f", tempSystem));
-                                    pbSystem.setProgress((int) tempSystem + 5);
+                                    pbSystem.setProgress((int) tempSystem);
                                 }
                             }
 
@@ -171,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                         tvIP.setText("Pi not connected");
                         ivArduinoStatus.setImageResource(R.drawable.led_red);
                         tvArduinoStatus.setText("Arduino not connected");
-                        ivTempLed.setImageResource(R.drawable.led_red);
+                        //ivTempLed.setImageResource(R.drawable.led_red);
 
                         pbSystem.setProgress(0);
                         pbRoom.setProgress(0);
@@ -190,8 +259,6 @@ public class MainActivity extends AppCompatActivity {
                 pbTemps.setVisibility(View.GONE);
             }
         });
-
-
     }
 
     private String getFormattedDate(long timestamp) {
@@ -211,6 +278,38 @@ public class MainActivity extends AppCompatActivity {
             return DateFormat.format(dateTimeFormatString, calendar).toString();
         } else {
             return DateFormat.format("MMM dd yyyy, HH:mm", calendar).toString();
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+        if(!tbBypass.isChecked()){
+            tbLight.setClickable(false);
+            tbLight.setEnabled(false);
+        }else{
+            tbLight.setClickable(true);
+            tbLight.setEnabled(true);
+        }
+
+        switch (compoundButton.getId()){
+
+            case R.id.tbBypass:
+
+                if(b) {
+                    ivBypass.setImageResource(R.drawable.led_red);
+                }else{
+                    ivBypass.setImageResource(R.drawable.led_off);
+                }
+                break;
+
+            case R.id.tbLight:
+                if(b) {
+                    ivLight.setImageResource(R.drawable.led_green);
+                }else{
+                    ivLight.setImageResource(R.drawable.led_off);
+                }
+                break;
         }
     }
 }
