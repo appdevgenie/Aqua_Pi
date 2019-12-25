@@ -1,21 +1,20 @@
 package com.appdevgenie.aquapi.activities;
 
-import android.animation.ArgbEvaluator;
-import android.animation.IntEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -81,16 +80,23 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         tbBypass.setOnCheckedChangeListener(this);
         tbLight = findViewById(R.id.tbLight);
         tbLight.setOnCheckedChangeListener(this);
-        if(!tbBypass.isChecked()){
+        if (!tbBypass.isChecked()) {
             tbLight.setClickable(false);
             tbLight.setEnabled(false);
-        }else{
+        } else {
             tbLight.setClickable(true);
             tbLight.setEnabled(true);
         }
 
         tbLight.setChecked(true);
         //ivTempLed = findViewById(R.id.ivTempLed);
+        Button bReboot = findViewById(R.id.bControlReboot);
+        bReboot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openRebootDialog();
+            }
+        });
 
         ConstraintLayout clRoomTemp = findViewById(R.id.includeRoomTemp);
         TextView tvRoomTitle = clRoomTemp.findViewById(R.id.tvTempTitle);
@@ -146,6 +152,58 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         objAnimator.start();*/
 
         setupFirebaseListener();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void openRebootDialog() {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        View layoutView = getLayoutInflater().inflate(R.layout.dialog_reboot, null);
+
+        Button bRebootPi = layoutView.findViewById(R.id.bRebootPi);
+        Button bRebootArduino = layoutView.findViewById(R.id.bRebootArduino);
+
+        dialogBuilder.setView(layoutView);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+
+        bRebootPi.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.performClick();
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Toast.makeText(MainActivity.this, "down", Toast.LENGTH_LONG).show();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
+                        break;
+                }
+
+                return false;
+            }
+        });
+
+        bRebootArduino.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.performClick();
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Toast.makeText(MainActivity.this, "down", Toast.LENGTH_LONG).show();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
+                        break;
+                }
+
+                return false;
+            }
+        });
     }
 
     /*@Override
@@ -284,29 +342,29 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
-        if(!tbBypass.isChecked()){
+        if (!tbBypass.isChecked()) {
             tbLight.setClickable(false);
             tbLight.setEnabled(false);
-        }else{
+        } else {
             tbLight.setClickable(true);
             tbLight.setEnabled(true);
         }
 
-        switch (compoundButton.getId()){
+        switch (compoundButton.getId()) {
 
             case R.id.tbBypass:
 
-                if(b) {
+                if (b) {
                     ivBypass.setImageResource(R.drawable.led_red);
-                }else{
+                } else {
                     ivBypass.setImageResource(R.drawable.led_off);
                 }
                 break;
 
             case R.id.tbLight:
-                if(b) {
+                if (b) {
                     ivLight.setImageResource(R.drawable.led_green);
-                }else{
+                } else {
                     ivLight.setImageResource(R.drawable.led_off);
                 }
                 break;
