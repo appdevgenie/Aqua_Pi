@@ -65,7 +65,7 @@
         android:layout_height="4dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
@@ -73,14 +73,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTempInfoMin" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTempMinTime" />
 
     <TextView
         android:id="@+id/tvMin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:text="Min"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:textColor="@color/colorText"
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:text="Max"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:textColor="@color/colorText"
@@ -104,4 +104,32 @@
         app:layout_constraintEnd_toEndOf="@+id/tvTempInfoMax"
         app:layout_constraintStart_toStartOf="@+id/tvTempInfoMax"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTempMinTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="20:00"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:textColor="@color/colorText"
+        app:fontFamily="sans-serif-light"
+        app:layout_constraintEnd_toEndOf="@+id/tvTempInfoMin"
+        app:layout_constraintStart_toStartOf="@+id/tvTempInfoMin"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempInfoMin" />
+
+    <TextView
+        android:id="@+id/tvTempMaxTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="19:25"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:textColor="@color/colorText"
+        app:fontFamily="sans-serif-light"
+        app:layout_constraintEnd_toEndOf="@+id/tvTempInfoMax"
+        app:layout_constraintStart_toStartOf="@+id/tvTempInfoMax"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempInfoMax" />
 </androidx.constraintlayout.widget.ConstraintLayout>

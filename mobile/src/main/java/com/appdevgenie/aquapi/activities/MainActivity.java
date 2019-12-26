@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,7 +24,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.appdevgenie.aquapi.R;
 import com.appdevgenie.aquapi.models.PiStatus;
-import com.appdevgenie.aquapi.models.Temperatures;
+import com.appdevgenie.aquapi.models.TemperatureInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     private ToggleButton tbBypass, tbLight;
     //AnimationDrawable animationDrawable;
+    private ArrayList<TemperatureInfo> infoArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,59 +157,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         objAnimator.setRepeatCount(Animation.INFINITE);
         objAnimator.start();*/
 
+        infoArrayList = TemperatureInfo.createTempList();
+
         setupFirebaseListener();
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void openRebootDialog() {
-
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
-        View layoutView = getLayoutInflater().inflate(R.layout.dialog_reboot, null);
-
-        Button bRebootPi = layoutView.findViewById(R.id.bRebootPi);
-        Button bRebootArduino = layoutView.findViewById(R.id.bRebootArduino);
-
-        dialogBuilder.setView(layoutView);
-        final AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        alertDialog.show();
-
-        bRebootPi.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                view.performClick();
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        Toast.makeText(MainActivity.this, "down", Toast.LENGTH_LONG).show();
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
-                        break;
-                }
-
-                return false;
-            }
-        });
-
-        bRebootArduino.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                view.performClick();
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        Toast.makeText(MainActivity.this, "down", Toast.LENGTH_LONG).show();
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
-                        break;
-                }
-
-                return false;
-            }
-        });
     }
 
     /*@Override
@@ -246,9 +199,56 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                         queryTemps.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                for (TemperatureInfo tempInfo : infoArrayList) {
+                                    TemperatureInfo temperatureInfo = dataSnapshot.child(tempInfo.getName()).getValue(TemperatureInfo.class);
+                                    String name = dataSnapshot.child(tempInfo.getName()).getKey();
+
+                                    if (tempInfo.getName().equals(name)) {
+                                        if (temperatureInfo != null) {
+
+                                            switch (name) {
+                                                case "water":
+                                                    infoArrayList.get(0).setTemp(temperatureInfo.getTemp());
+                                                    infoArrayList.get(0).setTempMax(temperatureInfo.getTempMax());
+                                                    infoArrayList.get(0).setTempMin(temperatureInfo.getTempMin());
+                                                    infoArrayList.get(0).setMinTimeStamp(temperatureInfo.getMinTimeStamp());
+                                                    infoArrayList.get(0).setMaxTimeStamp(temperatureInfo.getMaxTimeStamp());
+                                                    float tempWater = temperatureInfo.getTemp();
+                                                    tvWaterTemp.setText(String.format(Locale.getDefault(), "%.2f", tempWater));
+                                                    pbWater.setProgress((int) tempWater);
+                                                    break;
+
+                                                case "system":
+                                                    infoArrayList.get(1).setTemp(temperatureInfo.getTemp());
+                                                    infoArrayList.get(1).setTempMax(temperatureInfo.getTempMax());
+                                                    infoArrayList.get(1).setTempMin(temperatureInfo.getTempMin());
+                                                    infoArrayList.get(1).setMinTimeStamp(temperatureInfo.getMinTimeStamp());
+                                                    infoArrayList.get(1).setMaxTimeStamp(temperatureInfo.getMaxTimeStamp());
+                                                    float tempSystem = temperatureInfo.getTemp();
+                                                    tvSystemTemp.setText(String.format(Locale.getDefault(), "%.2f", tempSystem));
+                                                    pbSystem.setProgress((int) tempSystem);
+                                                    break;
+
+                                                case "room":
+                                                    infoArrayList.get(2).setTemp(temperatureInfo.getTemp());
+                                                    infoArrayList.get(2).setTempMax(temperatureInfo.getTempMax());
+                                                    infoArrayList.get(2).setTempMin(temperatureInfo.getTempMin());
+                                                    infoArrayList.get(2).setMinTimeStamp(temperatureInfo.getMinTimeStamp());
+                                                    infoArrayList.get(2).setMaxTimeStamp(temperatureInfo.getMaxTimeStamp());
+                                                    float tempRoom = temperatureInfo.getTemp();
+                                                    tvRoomTemp.setText(String.format(Locale.getDefault(), "%.2f", tempRoom));
+                                                    pbRoom.setProgress((int) tempRoom);
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+
+
                                 //pbTemps.setVisibility(View.GONE);
 
-                                Temperatures temperatures = dataSnapshot.getValue(Temperatures.class);
+                                /*Temperatures temperatures = dataSnapshot.getValue(Temperatures.class);
                                 if (temperatures != null) {
                                     //ivTempLed.setImageResource(R.drawable.led_green);
 
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                     float tempSystem = temperatures.getTempSystem();
                                     tvSystemTemp.setText(String.format(Locale.getDefault(), "%.2f", tempSystem));
                                     pbSystem.setProgress((int) tempSystem);
-                                }
+                                }*/
                             }
 
                             @Override
@@ -374,30 +374,98 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private void openRebootDialog() {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        View layoutView = getLayoutInflater().inflate(R.layout.dialog_reboot, null);
+
+        Button bRebootPi = layoutView.findViewById(R.id.bRebootPi);
+        Button bRebootArduino = layoutView.findViewById(R.id.bRebootArduino);
+
+        dialogBuilder.setView(layoutView);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+
+        bRebootPi.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.performClick();
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Toast.makeText(MainActivity.this, "down", Toast.LENGTH_LONG).show();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
+                        break;
+                }
+
+                return false;
+            }
+        });
+
+        bRebootArduino.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.performClick();
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Toast.makeText(MainActivity.this, "down", Toast.LENGTH_LONG).show();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
+                        break;
+                }
+
+                return false;
+            }
+        });
+    }
+
     @Override
     public void onClick(View view) {
-        
-        switch (view.getId()){
-            case R.id.includeWaterTemp:
-                openTemperatureInfoDialog();
-                //Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
-                break;
 
-            case R.id.includeRoomTemp:
+        switch (view.getId()) {
+            case R.id.includeWaterTemp:
+                openTemperatureInfoDialog(0);
                 //Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.includeSystemTemp:
+                openTemperatureInfoDialog(1);
                 //Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
                 break;
+
+            case R.id.includeRoomTemp:
+                openTemperatureInfoDialog(2);
+                //Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+                break;
+
         }
     }
 
-    private void openTemperatureInfoDialog() {
-
+    private void openTemperatureInfoDialog(int index) {
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
         View layoutView = getLayoutInflater().inflate(R.layout.dialog_temperature_info, null);
+
+        TextView tvMin = layoutView.findViewById(R.id.tvTempInfoMin);
+        tvMin.setText(
+                TextUtils.concat(String.format(Locale.getDefault(),
+                        "%.2f", infoArrayList.get(index).getTempMin()), " \u00b0C"));
+        TextView tvMax = layoutView.findViewById(R.id.tvTempInfoMax);
+        tvMax.setText(
+                TextUtils.concat(String.format(Locale.getDefault(),
+                        "%.2f", infoArrayList.get(index).getTempMax()), " \u00b0C"));
+
+        TextView tvMinTime = layoutView.findViewById(R.id.tvTempMinTime);
+        tvMinTime.setText(getFormattedDate(infoArrayList.get(index).getMinTimeStamp()));
+        TextView tvMaxTime = layoutView.findViewById(R.id.tvTempMaxTime);
+        tvMaxTime.setText(getFormattedDate(infoArrayList.get(index).getMaxTimeStamp()));
 
         dialogBuilder.setView(layoutView);
         final AlertDialog alertDialog = dialogBuilder.create();
