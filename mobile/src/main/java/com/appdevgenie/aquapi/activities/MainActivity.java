@@ -38,7 +38,7 @@ import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_STATUS;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_TEMPERATURES;
 
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private static final String TAG = "MainActivity";
 
@@ -103,18 +103,21 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         tvRoomTitle.setText("Room");
         tvRoomTemp = clRoomTemp.findViewById(R.id.tvTemperature);
         pbRoom = clRoomTemp.findViewById(R.id.pbTemperature);
+        clRoomTemp.setOnClickListener(this);
 
         ConstraintLayout clSystemTemp = findViewById(R.id.includeSystemTemp);
         TextView tvSystemTitle = clSystemTemp.findViewById(R.id.tvTempTitle);
         tvSystemTitle.setText("System");
         tvSystemTemp = clSystemTemp.findViewById(R.id.tvTemperature);
         pbSystem = clSystemTemp.findViewById(R.id.pbTemperature);
+        clSystemTemp.setOnClickListener(this);
 
         ConstraintLayout clWaterTemp = findViewById(R.id.includeWaterTemp);
         TextView tvWaterTitle = clWaterTemp.findViewById(R.id.tvTempTitle);
         tvWaterTitle.setText("Water");
         tvWaterTemp = clWaterTemp.findViewById(R.id.tvTemperature);
         pbWater = clWaterTemp.findViewById(R.id.pbTemperature);
+        clWaterTemp.setOnClickListener(this);
 
         /*ImageView imageView = findViewById(R.id.ivLed);
         imageView.setBackgroundResource(R.drawable.animation);
@@ -369,5 +372,38 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        
+        switch (view.getId()){
+            case R.id.includeWaterTemp:
+                openTemperatureInfoDialog();
+                //Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.includeRoomTemp:
+                //Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.includeSystemTemp:
+                //Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void openTemperatureInfoDialog() {
+
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        View layoutView = getLayoutInflater().inflate(R.layout.dialog_temperature_info, null);
+
+        dialogBuilder.setView(layoutView);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+
     }
 }

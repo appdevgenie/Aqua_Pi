@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@null">
+    android:background="@null"
+    android:clickable="true"
+    android:focusable="true">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
@@ -69,8 +71,8 @@
         android:gravity="center"
         android:text="--,--"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-        app:fontFamily="sans-serif-light"
         android:textColor="@color/colorText"
+        app:fontFamily="sans-serif-light"
         app:layout_constraintBottom_toTopOf="@+id/pbTemperature"
         app:layout_constraintEnd_toStartOf="@+id/tvCelcius"
         app:layout_constraintTop_toTopOf="parent" />
