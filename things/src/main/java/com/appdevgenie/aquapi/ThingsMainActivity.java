@@ -18,9 +18,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.appdevgenie.aquapi.models.Temperatures;
+import com.appdevgenie.aquapi.models.TemperatureInfo;
 import com.appdevgenie.aquapi.service.UsbService;
-import com.google.android.things.device.DeviceManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -74,7 +74,8 @@ public class ThingsMainActivity extends Activity {
     private DatabaseReference temperatureRef;
 
     private TextView tvIP;
-    String ip = "0.0.0.0";
+    private String ip = "0.0.0.0";
+    private ArrayList<TemperatureInfo> infoArrayList;
 
     private UsbService usbService;
     private TextView display;
@@ -161,6 +162,8 @@ public class ThingsMainActivity extends Activity {
 
         tvIP = findViewById(R.id.tvIP);
         display = findViewById(R.id.tvData);
+
+        infoArrayList = TemperatureInfo.createTempList();
 
         setupFirebaseListener();
     }
@@ -390,7 +393,7 @@ public class ThingsMainActivity extends Activity {
                     Toast.makeText(mActivity.get(), "DSR_CHANGE", Toast.LENGTH_LONG).show();
                     break;
                 /*case UsbService.SYNC_READ:
-                    *//*String buffer = (String) msg.obj;
+                 *//*String buffer = (String) msg.obj;
                     mActivity.get().display.append(buffer);*//*
                     break;*/
             }
@@ -398,14 +401,23 @@ public class ThingsMainActivity extends Activity {
     }
 
     private void onTempDataReceived(String data) {
-        // Add whatever you want here
         Log.i(TAG, "Serial data received: " + data);
         display.setText(data);
 
-        float tempRoom = 0.0f;
         float tempWater = 0.0f;
+        float tempWaterMin = infoArrayList.get(0).getTempMin();
+        float tempWaterMax = infoArrayList.get(0).getTempMax();
+
         float tempSystem = 0.0f;
+        float tempSystemMin = infoArrayList.get(1).getTempMin();
+        float tempSystemMax = infoArrayList.get(1).getTempMax();
+
+        float tempRoom = 0.0f;
+        float tempRoomMin = infoArrayList.get(2).getTempMin();
+        float tempRoomMax = infoArrayList.get(2).getTempMax();
+
         try {
+            //read info from arduino
             String[] tempsList = data.split(" ");
             tempWater = Float.parseFloat(tempsList[1]);
             tempSystem = Float.parseFloat(tempsList[2]);
@@ -414,11 +426,54 @@ public class ThingsMainActivity extends Activity {
             e.printStackTrace();
         }
 
+        if (tempWater <= tempWaterMin){
+            tempWaterMin = tempWater;
+            infoArrayList.get(0).setMinTimeStamp(System.currentTimeMillis());
+        }
+        if (tempWater >= tempWaterMax) {
+            tempWaterMax = tempWater;
+            infoArrayList.get(0).setMaxTimeStamp(System.currentTimeMillis());
+        }
+        infoArrayList.get(0).setTemp(tempWater);
+        infoArrayList.get(0).setTempMin(tempWaterMin);
+        infoArrayList.get(0).setTempMax(tempWaterMax);
+
+        if (tempSystem <= tempSystemMin){
+            tempSystemMin = tempSystem;
+            infoArrayList.get(1).setMinTimeStamp(System.currentTimeMillis());
+        }
+        if (tempSystem >= tempSystemMax){
+            tempSystemMax = tempSystem;
+            infoArrayList.get(1).setMaxTimeStamp(System.currentTimeMillis());
+        }
+        infoArrayList.get(1).setTemp(tempSystem);
+        infoArrayList.get(1).setTempMin(tempSystemMin);
+        infoArrayList.get(1).setTempMax(tempSystemMax);
+
+        if (tempRoom <= tempRoomMin){
+            tempRoomMin = tempRoom;
+            infoArrayList.get(2).setMinTimeStamp(System.currentTimeMillis());
+        }
+        if (tempRoom >= tempRoomMax){
+            tempRoomMax = tempRoom;
+            infoArrayList.get(2).setMaxTimeStamp(System.currentTimeMillis());
+        }
+        infoArrayList.get(2).setTemp(tempRoom);
+        infoArrayList.get(2).setTempMin(tempRoomMin);
+        infoArrayList.get(2).setTempMax(tempRoomMax);
+
         temperatureRef = databaseReference.child(DB_CHILD_TEMPERATURES);
-        Temperatures temperatures = new Temperatures();
+        for (TemperatureInfo temperatureInfo : infoArrayList) {
+            DatabaseReference dbReference = temperatureRef.child(temperatureInfo.getName()).getRef();
+            dbReference.setValue(temperatureInfo);
+        }
+
+        /*Temperatures temperatures = new Temperatures();
         temperatures.setTempRoom(tempRoom);
         temperatures.setTempSystem(tempSystem);
         temperatures.setTempWater(tempWater);
-        temperatureRef.setValue(temperatures);
+        temperatureRef.setValue(temperatures);*/
+
+
     }
 }
