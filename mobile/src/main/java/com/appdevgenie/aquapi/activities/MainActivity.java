@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.appdevgenie.aquapi.R;
+import com.appdevgenie.aquapi.models.Control;
 import com.appdevgenie.aquapi.models.PiStatus;
 import com.appdevgenie.aquapi.models.TemperatureInfo;
 import com.google.firebase.database.DataSnapshot;
@@ -37,6 +38,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
+import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_CONTROL;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_STATUS;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_TEMPERATURES;
 
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private ToggleButton tbBypass, tbLight;
     //AnimationDrawable animationDrawable;
     private ArrayList<TemperatureInfo> infoArrayList;
+    private Control control = new Control();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,6 +182,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         Query queryTemps = databaseReference
                 .child(DB_CHILD_TEMPERATURES);
 
+        Query queryControl = databaseReference
+                .child(DB_CHILD_CONTROL);
+
         queryStatus.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -245,7 +251,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                     }
                                 }
 
-
                                 //pbTemps.setVisibility(View.GONE);
 
                                 /*Temperatures temperatures = dataSnapshot.getValue(Temperatures.class);
@@ -269,6 +274,24 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
                                 pbTemps.setVisibility(View.GONE);
+                            }
+                        });
+
+                        queryControl.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                Control controlData = dataSnapshot.getValue(Control.class);
+                                //control.setLightOn(controlData.isLightOn());
+                                tbLight.setChecked(controlData.isLightOn());
+
+                                //control.setBypassOn(controlData.isBypassOn());
+                                tbBypass.setChecked(controlData.isBypassOn());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
                             }
                         });
 
@@ -362,6 +385,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 } else {
                     ivBypass.setImageResource(R.drawable.led_off);
                 }
+                control.setBypassOn(b);
+                databaseReference.child(DB_CHILD_CONTROL).setValue(control);
                 break;
 
             case R.id.tbLight:
@@ -370,6 +395,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 } else {
                     ivLight.setImageResource(R.drawable.led_off);
                 }
+                control.setLightOn(b);
+                databaseReference.child(DB_CHILD_CONTROL).setValue(control);
                 break;
         }
     }
@@ -393,13 +420,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 view.performClick();
+
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        Toast.makeText(MainActivity.this, "down", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Resetting Raspberry Pi", Toast.LENGTH_LONG).show();
+                        control.setRebootPi(Boolean.TRUE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
+                        control.setRebootPi(Boolean.FALSE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
                         break;
                 }
 
@@ -414,10 +446,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         Toast.makeText(MainActivity.this, "down", Toast.LENGTH_LONG).show();
+                        control.setResetArduino(Boolean.TRUE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
                         break;
 
                     case MotionEvent.ACTION_UP:
                         Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
+                        control.setResetArduino(Boolean.FALSE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
                         break;
                 }
 

@@ -18,8 +18,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.appdevgenie.aquapi.models.Control;
 import com.appdevgenie.aquapi.models.TemperatureInfo;
 import com.appdevgenie.aquapi.service.UsbService;
+import com.google.android.things.device.DeviceManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -36,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
+import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_CONTROL;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_IP;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_LAST_ONLINE;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_ONLINE_ARDUINO;
@@ -72,6 +76,7 @@ public class ThingsMainActivity extends Activity {
     private DatabaseReference lastOnlineRef;
     private DatabaseReference connectedArduinoRef;
     private DatabaseReference temperatureRef;
+    private DatabaseReference controlRef;
 
     private TextView tvIP;
     private String ip = "0.0.0.0";
@@ -106,18 +111,18 @@ public class ThingsMainActivity extends Activity {
             switch (intent.getAction()) {
                 case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
                     Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
-                    isArduinoConnected = true;
+                    isArduinoConnected = Boolean.TRUE;
                     break;
                 case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
                     Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
                     break;
                 case UsbService.ACTION_NO_USB: // NO USB CONNECTED
                     Toast.makeText(context, "No USB connected", Toast.LENGTH_SHORT).show();
-                    isArduinoConnected = false;
+                    isArduinoConnected = Boolean.FALSE;
                     break;
                 case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
                     Toast.makeText(context, "USB disconnected", Toast.LENGTH_SHORT).show();
-                    isArduinoConnected = false;
+                    isArduinoConnected = Boolean.FALSE;
                     break;
                 case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
                     Toast.makeText(context, "USB device not supported", Toast.LENGTH_SHORT).show();
@@ -127,17 +132,7 @@ public class ThingsMainActivity extends Activity {
             connectedArduinoRef = databaseReference
                     .child(DB_CHILD_STATUS)
                     .child(DB_CHILD_ONLINE_ARDUINO);
-            connectedArduinoRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    connectedArduinoRef.setValue(isArduinoConnected);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            connectedArduinoRef.setValue(isArduinoConnected);
         }
     };
 
@@ -149,8 +144,6 @@ public class ThingsMainActivity extends Activity {
         Log.d(TAG, "onCreate");
 
         mHandler = new MyHandler(this);
-
-        //DeviceManager.getInstance().reboot();
 
         init();
     }
@@ -181,7 +174,7 @@ public class ThingsMainActivity extends Activity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChanged: " + dataSnapshot.getValue());
+                //Log.d(TAG, "onDataChanged: " + dataSnapshot.getValue());
                 connectedRef.setValue(Boolean.TRUE);
                 lastOnlineRef.setValue(ServerValue.TIMESTAMP);
 
@@ -198,6 +191,40 @@ public class ThingsMainActivity extends Activity {
                 connectedRef.onDisconnect().setValue(Boolean.FALSE);
                 lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        controlRef = databaseReference
+                .child(DB_CHILD_CONTROL);
+        controlRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Control controlData = dataSnapshot.getValue(Control.class);
+                boolean bypass = controlData.isBypassOn();
+                //Log.d(TAG, "onDataChanged: bypass " + String.valueOf(bypass));
+                if(bypass){
+
+                }else{
+
+                }
+
+                boolean rebootPi = controlData.isRebootPi();
+                Log.d(TAG, "onDataChanged: reboot " + String.valueOf(rebootPi));
+                if(rebootPi){
+                    //DeviceManager.getInstance().reboot();
+                    //OR
+                    /*try {
+                        Runtime.getRuntime().exec("reboot");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
+                }
             }
 
             @Override
@@ -374,6 +401,9 @@ public class ThingsMainActivity extends Activity {
                             if (TextUtils.equals(dataStr.substring(0, 5), "temps")) {
                                 onTempDataReceived(dataStr);
                             }
+                            if (TextUtils.equals(dataStr.substring(0, 5), "bypass")) {
+                                Log.i(TAG, "Serial bypass data received: " + dataStr);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -401,7 +431,7 @@ public class ThingsMainActivity extends Activity {
     }
 
     private void onTempDataReceived(String data) {
-        Log.i(TAG, "Serial data received: " + data);
+        Log.i(TAG, "Serial temp data received: " + data);
         display.setText(data);
 
         float tempWater = 0.0f;
@@ -473,7 +503,6 @@ public class ThingsMainActivity extends Activity {
         temperatures.setTempSystem(tempSystem);
         temperatures.setTempWater(tempWater);
         temperatureRef.setValue(temperatures);*/
-
 
     }
 }

@@ -43,7 +43,7 @@
         android:layout_marginLeft="16dp"
         android:text="Temperature sensors"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-        app:fontFamily="sans-serif-light"
+        app:fontFamily="sans-serif-lightOn"
         android:textColor="@color/colorText"
         app:layout_constraintBottom_toBottomOf="@+id/ivTempLed"
         app:layout_constraintStart_toEndOf="@+id/ivTempLed"

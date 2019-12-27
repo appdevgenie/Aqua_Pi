@@ -25,7 +25,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-        app:fontFamily="sans-serif-light"
+        app:fontFamily="sans-serif-lightOn"
         android:textColor="@color/colorText"
         app:layout_constraintBottom_toBottomOf="@+id/ivControl"
         app:layout_constraintStart_toEndOf="@+id/ivControl"
@@ -54,7 +54,7 @@
         android:text="Bypass"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:textColor="@color/colorText"
-        app:fontFamily="sans-serif-light"
+        app:fontFamily="sans-serif-lightOn"
         app:layout_constraintBottom_toBottomOf="@+id/ivControlBypass"
         app:layout_constraintStart_toEndOf="@+id/ivControlBypass"
         app:layout_constraintTop_toTopOf="@+id/ivControlBypass" />
@@ -96,7 +96,7 @@
         android:text="Light"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:textColor="@color/colorText"
-        app:fontFamily="sans-serif-light"
+        app:fontFamily="sans-serif-lightOn"
         app:layout_constraintBottom_toBottomOf="@+id/ivControlLight"
         app:layout_constraintStart_toEndOf="@+id/ivControlLight"
         app:layout_constraintTop_toTopOf="@+id/ivControlLight" />
