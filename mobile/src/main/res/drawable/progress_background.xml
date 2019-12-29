@@ -4,13 +4,13 @@
         <shape>
             <!--<solid android:color="#999" />-->
             <gradient
-                android:centerColor="#18799900"
-                android:endColor="#18FF0000"
-                android:startColor="#18008686" />
-            <size
+                android:centerColor="#20799900"
+                android:endColor="#20FF0000"
+                android:startColor="#20008686" />
+            <!--<size
                 android:width="10dp"
-                android:height="10dp" />
-            <corners android:radius="1dp" />
+                android:height="10dp" />-->
+            <corners android:radius="4dp" />
         </shape>
         <!--<shape>
             <gradient
@@ -45,10 +45,10 @@
                             android:centerColor="#799900"
                             android:endColor="#FF0000"
                             android:startColor="#008686" />
-                        <size
-                            android:width="10dp"
-                            android:height="10dp" />
-                        <corners android:radius="1dp" />
+                        <!--<size
+                            android:width="12dp"
+                            android:height="12dp" />-->
+                        <corners android:radius="4dp" />
                     </shape>
                 </item>
             </layer-list>

@@ -221,7 +221,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                                     infoArrayList.get(0).setMinTimeStamp(temperatureInfo.getMinTimeStamp());
                                                     infoArrayList.get(0).setMaxTimeStamp(temperatureInfo.getMaxTimeStamp());
                                                     float tempWater = temperatureInfo.getTemp();
-                                                    tvWaterTemp.setText(String.format(Locale.getDefault(), "%.2f", tempWater));
+                                                    tvWaterTemp
+                                                            .setText(TextUtils.concat(
+                                                                    String.format(Locale.getDefault(), "%.2f", tempWater), " \u00b0C"));
                                                     pbWater.setProgress((int) tempWater);
                                                     break;
 
@@ -232,7 +234,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                                     infoArrayList.get(1).setMinTimeStamp(temperatureInfo.getMinTimeStamp());
                                                     infoArrayList.get(1).setMaxTimeStamp(temperatureInfo.getMaxTimeStamp());
                                                     float tempSystem = temperatureInfo.getTemp();
-                                                    tvSystemTemp.setText(String.format(Locale.getDefault(), "%.2f", tempSystem));
+                                                    tvSystemTemp
+                                                            .setText(TextUtils.concat(
+                                                                    String.format(Locale.getDefault(), "%.2f", tempSystem), " \u00b0C"));
                                                     pbSystem.setProgress((int) tempSystem);
                                                     break;
 
@@ -243,7 +247,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                                     infoArrayList.get(2).setMinTimeStamp(temperatureInfo.getMinTimeStamp());
                                                     infoArrayList.get(2).setMaxTimeStamp(temperatureInfo.getMaxTimeStamp());
                                                     float tempRoom = temperatureInfo.getTemp();
-                                                    tvRoomTemp.setText(String.format(Locale.getDefault(), "%.2f", tempRoom));
+                                                    tvRoomTemp
+                                                            .setText(TextUtils.concat(
+                                                                    String.format(Locale.getDefault(), "%.2f", tempRoom), " \u00b0C"));
                                                     pbRoom.setProgress((int) tempRoom);
                                                     break;
                                             }
