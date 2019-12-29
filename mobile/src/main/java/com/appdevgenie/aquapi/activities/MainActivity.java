@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                                     tvWaterTemp
                                                             .setText(TextUtils.concat(
                                                                     String.format(Locale.getDefault(), "%.2f", tempWater), " \u00b0C"));
-                                                    pbWater.setProgress((int) tempWater);
+                                                    pbWater.setProgress((int) tempWater + 10);
                                                     break;
 
                                                 case "system":
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                                     tvSystemTemp
                                                             .setText(TextUtils.concat(
                                                                     String.format(Locale.getDefault(), "%.2f", tempSystem), " \u00b0C"));
-                                                    pbSystem.setProgress((int) tempSystem);
+                                                    pbSystem.setProgress((int) tempSystem + 10);
                                                     break;
 
                                                 case "room":
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                                                     tvRoomTemp
                                                             .setText(TextUtils.concat(
                                                                     String.format(Locale.getDefault(), "%.2f", tempRoom), " \u00b0C"));
-                                                    pbRoom.setProgress((int) tempRoom);
+                                                    pbRoom.setProgress((int) tempRoom + 10);
                                                     break;
                                             }
                                         }

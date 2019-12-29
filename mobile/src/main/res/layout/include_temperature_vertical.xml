@@ -9,13 +9,20 @@
     android:clickable="true"
     android:focusable="true">
 
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline30"
+    <TextView
+        android:id="@+id/tvTemp50"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="50"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:textColor="@color/colorText"
+        android:textSize="12sp"
+        app:fontFamily="sans-serif-light"
+        app:layout_constraintBottom_toTopOf="@+id/pbTemperature"
+        app:layout_constraintEnd_toStartOf="@+id/pbTemperature"
+        app:layout_constraintTop_toTopOf="@+id/pbTemperature" />
 
     <TextView
         android:id="@+id/tvTemp35"
@@ -23,14 +30,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="35 -"
+        android:text="35"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:textColor="@color/colorText"
         android:textSize="12sp"
         app:fontFamily="sans-serif-light"
-        app:layout_constraintBottom_toTopOf="@+id/guideline30"
+        app:layout_constraintBottom_toTopOf="@+id/guideline50"
         app:layout_constraintEnd_toStartOf="@+id/pbTemperature"
-        app:layout_constraintTop_toTopOf="@+id/guideline30" />
+        app:layout_constraintTop_toTopOf="@+id/pbTemperature" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline50"
@@ -40,12 +47,12 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/tvTemp25"
+        android:id="@+id/tvTemp20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="25 -"
+        android:text="20"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:textColor="@color/colorText"
         android:textSize="12sp"
@@ -54,27 +61,35 @@
         app:layout_constraintEnd_toStartOf="@+id/pbTemperature"
         app:layout_constraintTop_toTopOf="@+id/guideline50" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline70"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7" />
-
     <TextView
-        android:id="@+id/tvTemp15"
+        android:id="@+id/tvTemp5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="15 -"
+        android:text="5"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
         android:textColor="@color/colorText"
         android:textSize="12sp"
         app:fontFamily="sans-serif-light"
-        app:layout_constraintBottom_toTopOf="@+id/guideline70"
+        app:layout_constraintBottom_toBottomOf="@+id/pbTemperature"
         app:layout_constraintEnd_toStartOf="@+id/pbTemperature"
-        app:layout_constraintTop_toTopOf="@+id/guideline70" />
+        app:layout_constraintTop_toTopOf="@+id/guideline50" />
+
+    <TextView
+        android:id="@+id/tvTempN10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="-10"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+        android:textColor="@color/colorText"
+        android:textSize="12sp"
+        app:fontFamily="sans-serif-light"
+        app:layout_constraintBottom_toBottomOf="@+id/pbTemperature"
+        app:layout_constraintEnd_toStartOf="@+id/pbTemperature"
+        app:layout_constraintTop_toBottomOf="@+id/pbTemperature" />
 
     <TextView
         android:id="@+id/tvTemperature"
@@ -93,11 +108,11 @@
     <ProgressBar
         android:id="@+id/pbTemperature"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="10dp"
+        android:layout_width="8dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:max="50"
+        android:max="60"
         android:progress="0"
         android:progressDrawable="@drawable/vertical_progress"
         app:layout_constraintBottom_toTopOf="@+id/tvTempTitle"
