@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,21 +22,22 @@ import androidx.annotation.NonNull;
 import com.appdevgenie.aquapi.models.Control;
 import com.appdevgenie.aquapi.models.TemperatureInfo;
 import com.appdevgenie.aquapi.service.UsbService;
-import com.google.android.things.device.DeviceManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
@@ -157,6 +159,7 @@ public class ThingsMainActivity extends Activity {
         display = findViewById(R.id.tvData);
 
         infoArrayList = TemperatureInfo.createTempList();
+        //infoArrayList = new ArrayList<>();
 
         setupFirebaseListener();
     }
@@ -170,6 +173,9 @@ public class ThingsMainActivity extends Activity {
         lastOnlineRef = databaseReference
                 .child(DB_CHILD_STATUS)
                 .child(DB_CHILD_LAST_ONLINE);
+
+        Query queryTemps = databaseReference
+                .child(DB_CHILD_TEMPERATURES);
 
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -191,6 +197,52 @@ public class ThingsMainActivity extends Activity {
                 connectedRef.onDisconnect().setValue(Boolean.FALSE);
                 lastOnlineRef.onDisconnect().setValue(ServerValue.TIMESTAMP);
 
+                queryTemps.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for (TemperatureInfo tempInfo : infoArrayList) {
+                            TemperatureInfo temperatureInfo = dataSnapshot.child(tempInfo.getName()).getValue(TemperatureInfo.class);
+                            String name = dataSnapshot.child(tempInfo.getName()).getKey();
+
+                            if (tempInfo.getName().equals(name)) {
+                                if (temperatureInfo != null) {
+
+                                    switch (name) {
+                                        case "water":
+                                            infoArrayList.get(0).setTemp(temperatureInfo.getTemp());
+                                            infoArrayList.get(0).setTempMax(temperatureInfo.getTempMax());
+                                            infoArrayList.get(0).setTempMin(temperatureInfo.getTempMin());
+                                            infoArrayList.get(0).setMinTimeStamp(temperatureInfo.getMinTimeStamp());
+                                            infoArrayList.get(0).setMaxTimeStamp(temperatureInfo.getMaxTimeStamp());
+                                            break;
+
+                                        case "system":
+                                            infoArrayList.get(1).setTemp(temperatureInfo.getTemp());
+                                            infoArrayList.get(1).setTempMax(temperatureInfo.getTempMax());
+                                            infoArrayList.get(1).setTempMin(temperatureInfo.getTempMin());
+                                            infoArrayList.get(1).setMinTimeStamp(temperatureInfo.getMinTimeStamp());
+                                            infoArrayList.get(1).setMaxTimeStamp(temperatureInfo.getMaxTimeStamp());
+                                            break;
+
+                                        case "room":
+                                            infoArrayList.get(2).setTemp(temperatureInfo.getTemp());
+                                            infoArrayList.get(2).setTempMax(temperatureInfo.getTempMax());
+                                            infoArrayList.get(2).setTempMin(temperatureInfo.getTempMin());
+                                            infoArrayList.get(2).setMinTimeStamp(temperatureInfo.getMinTimeStamp());
+                                            infoArrayList.get(2).setMaxTimeStamp(temperatureInfo.getMaxTimeStamp());
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+
             }
 
             @Override
@@ -207,16 +259,28 @@ public class ThingsMainActivity extends Activity {
 
                 Control controlData = dataSnapshot.getValue(Control.class);
                 boolean bypass = controlData.isBypassOn();
-                //Log.d(TAG, "onDataChanged: bypass " + String.valueOf(bypass));
-                if(bypass){
-
-                }else{
-
+                Log.d(TAG, "onDataChanged: bypass " + String.valueOf(bypass));
+                if (bypass) {
+                    String byteString = "bypassOn";
+                    try {
+                        byte[] bytes = byteString.getBytes("UTF-8");
+                        usbService.write(bytes);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    String byteString = "bypassOff";
+                    try {
+                        byte[] bytes = byteString.getBytes("UTF-8");
+                        usbService.write(bytes);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 boolean rebootPi = controlData.isRebootPi();
                 Log.d(TAG, "onDataChanged: reboot " + String.valueOf(rebootPi));
-                if(rebootPi){
+                if (rebootPi) {
                     //DeviceManager.getInstance().reboot();
                     //OR
                     /*try {
@@ -401,8 +465,9 @@ public class ThingsMainActivity extends Activity {
                             if (TextUtils.equals(dataStr.substring(0, 5), "temps")) {
                                 onTempDataReceived(dataStr);
                             }
-                            if (TextUtils.equals(dataStr.substring(0, 5), "bypass")) {
-                                Log.i(TAG, "Serial bypass data received: " + dataStr);
+                            if (TextUtils.equals(dataStr.substring(0, 6), "bypass")) {
+                                //Log.i(TAG, "Serial bypass data received: " + dataStr);
+                                updateBypass(dataStr);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -427,6 +492,18 @@ public class ThingsMainActivity extends Activity {
                     mActivity.get().display.append(buffer);*//*
                     break;*/
             }
+        }
+    }
+
+    private void updateBypass(String dataStr) {
+
+        String bypassStr = dataStr.substring(dataStr.length() -1);
+        if(TextUtils.equals(bypassStr, "1")) {
+            databaseReference
+                    .child(DB_CHILD_CONTROL).child("bypassOn").setValue(Boolean.TRUE);
+        }else{
+            databaseReference
+                    .child(DB_CHILD_CONTROL).child("bypassOn").setValue(Boolean.FALSE);
         }
     }
 
@@ -456,7 +533,7 @@ public class ThingsMainActivity extends Activity {
             e.printStackTrace();
         }
 
-        if (tempWater <= tempWaterMin){
+        if (tempWater <= tempWaterMin) {
             tempWaterMin = tempWater;
             infoArrayList.get(0).setMinTimeStamp(System.currentTimeMillis());
         }
@@ -468,11 +545,11 @@ public class ThingsMainActivity extends Activity {
         infoArrayList.get(0).setTempMin(tempWaterMin);
         infoArrayList.get(0).setTempMax(tempWaterMax);
 
-        if (tempSystem <= tempSystemMin){
+        if (tempSystem <= tempSystemMin) {
             tempSystemMin = tempSystem;
             infoArrayList.get(1).setMinTimeStamp(System.currentTimeMillis());
         }
-        if (tempSystem >= tempSystemMax){
+        if (tempSystem >= tempSystemMax) {
             tempSystemMax = tempSystem;
             infoArrayList.get(1).setMaxTimeStamp(System.currentTimeMillis());
         }
@@ -480,11 +557,11 @@ public class ThingsMainActivity extends Activity {
         infoArrayList.get(1).setTempMin(tempSystemMin);
         infoArrayList.get(1).setTempMax(tempSystemMax);
 
-        if (tempRoom <= tempRoomMin){
+        if (tempRoom <= tempRoomMin) {
             tempRoomMin = tempRoom;
             infoArrayList.get(2).setMinTimeStamp(System.currentTimeMillis());
         }
-        if (tempRoom >= tempRoomMax){
+        if (tempRoom >= tempRoomMax) {
             tempRoomMax = tempRoom;
             infoArrayList.get(2).setMaxTimeStamp(System.currentTimeMillis());
         }
