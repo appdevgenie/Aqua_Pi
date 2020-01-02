@@ -41,9 +41,11 @@ import java.util.Locale;
 import java.util.Set;
 
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
+import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_BYPASS;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_CONTROL;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_IP;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_LAST_ONLINE;
+import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_LIGHT;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_ONLINE_ARDUINO;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_ONLINE_PI;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_STATUS;
@@ -278,6 +280,25 @@ public class ThingsMainActivity extends Activity {
                     }
                 }
 
+                boolean light = controlData.isLightOn();
+                if (light) {
+                    String byteString = "lightOn";
+                    try {
+                        byte[] bytes = byteString.getBytes("UTF-8");
+                        usbService.write(bytes);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    String byteString = "lightOff";
+                    try {
+                        byte[] bytes = byteString.getBytes("UTF-8");
+                        usbService.write(bytes);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 boolean rebootPi = controlData.isRebootPi();
                 Log.d(TAG, "onDataChanged: reboot " + String.valueOf(rebootPi));
                 if (rebootPi) {
@@ -469,6 +490,10 @@ public class ThingsMainActivity extends Activity {
                                 //Log.i(TAG, "Serial bypass data received: " + dataStr);
                                 updateBypass(dataStr);
                             }
+                            if (TextUtils.equals(dataStr.substring(0, 5), "light")) {
+                                //Log.i(TAG, "Serial bypass data received: " + dataStr);
+                                updateLight(dataStr);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -495,15 +520,27 @@ public class ThingsMainActivity extends Activity {
         }
     }
 
+    private void updateLight(String dataStr) {
+
+        String bypassStr = dataStr.substring(dataStr.length() -1);
+        if(TextUtils.equals(bypassStr, "1")) {
+            databaseReference
+                    .child(DB_CHILD_CONTROL).child(DB_CHILD_LIGHT).setValue(Boolean.TRUE);
+        }else{
+            databaseReference
+                    .child(DB_CHILD_CONTROL).child(DB_CHILD_LIGHT).setValue(Boolean.FALSE);
+        }
+    }
+
     private void updateBypass(String dataStr) {
 
         String bypassStr = dataStr.substring(dataStr.length() -1);
         if(TextUtils.equals(bypassStr, "1")) {
             databaseReference
-                    .child(DB_CHILD_CONTROL).child("bypassOn").setValue(Boolean.TRUE);
+                    .child(DB_CHILD_CONTROL).child(DB_CHILD_BYPASS).setValue(Boolean.TRUE);
         }else{
             databaseReference
-                    .child(DB_CHILD_CONTROL).child("bypassOn").setValue(Boolean.FALSE);
+                    .child(DB_CHILD_CONTROL).child(DB_CHILD_BYPASS).setValue(Boolean.FALSE);
         }
     }
 
