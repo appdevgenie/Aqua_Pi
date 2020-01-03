@@ -13,7 +13,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +29,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -37,7 +37,6 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
@@ -260,8 +259,11 @@ public class ThingsMainActivity extends Activity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 Control controlData = dataSnapshot.getValue(Control.class);
-                boolean bypass = controlData.isBypassOn();
-                Log.d(TAG, "onDataChanged: bypass " + String.valueOf(bypass));
+                boolean bypass = false;
+                if (controlData != null) {
+                    bypass = controlData.isBypassOn();
+                }
+                //Log.d(TAG, "onDataChanged: bypass " + String.valueOf(bypass));
                 if (bypass) {
                     String byteString = "bypassOn";
                     try {
@@ -304,11 +306,22 @@ public class ThingsMainActivity extends Activity {
                 if (rebootPi) {
                     //DeviceManager.getInstance().reboot();
                     //OR
-                    /*try {
+                    try {
                         Runtime.getRuntime().exec("reboot");
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }*/
+                    }
+                }
+
+                boolean resetArduino = controlData.isResetArduino();
+                if (resetArduino) {
+                    String byteString = "reset";
+                    try {
+                        byte[] bytes = byteString.getBytes("UTF-8");
+                        usbService.write(bytes);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -522,11 +535,11 @@ public class ThingsMainActivity extends Activity {
 
     private void updateLight(String dataStr) {
 
-        String bypassStr = dataStr.substring(dataStr.length() -1);
-        if(TextUtils.equals(bypassStr, "1")) {
+        String bypassStr = dataStr.substring(dataStr.length() - 1);
+        if (TextUtils.equals(bypassStr, "1")) {
             databaseReference
                     .child(DB_CHILD_CONTROL).child(DB_CHILD_LIGHT).setValue(Boolean.TRUE);
-        }else{
+        } else {
             databaseReference
                     .child(DB_CHILD_CONTROL).child(DB_CHILD_LIGHT).setValue(Boolean.FALSE);
         }
@@ -534,11 +547,11 @@ public class ThingsMainActivity extends Activity {
 
     private void updateBypass(String dataStr) {
 
-        String bypassStr = dataStr.substring(dataStr.length() -1);
-        if(TextUtils.equals(bypassStr, "1")) {
+        String bypassStr = dataStr.substring(dataStr.length() - 1);
+        if (TextUtils.equals(bypassStr, "1")) {
             databaseReference
                     .child(DB_CHILD_CONTROL).child(DB_CHILD_BYPASS).setValue(Boolean.TRUE);
-        }else{
+        } else {
             databaseReference
                     .child(DB_CHILD_CONTROL).child(DB_CHILD_BYPASS).setValue(Boolean.FALSE);
         }

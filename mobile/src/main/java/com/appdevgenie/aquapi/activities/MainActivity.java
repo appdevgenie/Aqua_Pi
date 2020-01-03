@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             tbLight.setEnabled(true);
         }
 
-        tbLight.setChecked(true);
+        //tbLight.setChecked(true);
         //ivTempLed = findViewById(R.id.ivTempLed);
         Button bReboot = findViewById(R.id.bControlReboot);
         bReboot.setOnClickListener(new View.OnClickListener() {
