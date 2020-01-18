@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/display_background">
+
+    <ImageView
+        android:id="@+id/ivPiStatus"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toStartOf="@+id/ivIpAddress"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle_off" />
+
+    <TextView
+        android:id="@+id/tvPiStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Raspberry Pi"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/ivPiStatus"
+        app:layout_constraintStart_toStartOf="@+id/ivPiStatus"
+        app:layout_constraintTop_toBottomOf="@+id/ivPiStatus" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/tvPiStatus"
+        app:layout_constraintStart_toStartOf="@+id/tvPiStatus"
+        app:layout_constraintTop_toBottomOf="@+id/tvPiStatus"
+        tools:text="today" />
+
+    <ImageView
+        android:id="@+id/ivIpAddress"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toStartOf="@+id/ivArduinoStatus"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ivPiStatus"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle_off" />
+
+    <TextView
+        android:id="@+id/tvIpAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="10.0.0.0"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/ivIpAddress"
+        app:layout_constraintStart_toStartOf="@+id/ivIpAddress"
+        app:layout_constraintTop_toBottomOf="@+id/ivIpAddress" />
+
+    <ImageView
+        android:id="@+id/ivArduinoStatus"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ivIpAddress"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle_off" />
+
+    <TextView
+        android:id="@+id/tvArduinoStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Arduino"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/ivArduinoStatus"
+        app:layout_constraintHorizontal_bias="0.615"
+        app:layout_constraintStart_toStartOf="@+id/ivArduinoStatus"
+        app:layout_constraintTop_toBottomOf="@+id/ivArduinoStatus" />
+
+    <TextView
+        android:id="@+id/tvTempNow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="--.--"
+        android:textColor="@color/displayText"
+        android:textSize="90sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginBottom="32dp"
+        android:text="°C"
+        android:textColor="@color/displayText"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTempNow"
+        app:layout_constraintStart_toEndOf="@+id/tvTempNow"
+        app:layout_constraintTop_toTopOf="@+id/tvTempNow" />
+
+    <TextView
+        android:id="@+id/tvTempMax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--.--"
+        android:textColor="@color/displayText"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTempMin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvTempMin"
+        app:layout_constraintTop_toTopOf="@+id/tvTempMin" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="max"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvTempMax"
+        app:layout_constraintEnd_toEndOf="@+id/textView6"
+        app:layout_constraintStart_toStartOf="@+id/tvTempMax" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="°C"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/tvTempMax"
+        app:layout_constraintTop_toTopOf="@+id/tvTempMax" />
+
+    <TextView
+        android:id="@+id/tvTempMin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--.--"
+        android:textColor="@color/displayText"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvTempMax"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempNow" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="°C"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/tvTempMin"
+        app:layout_constraintTop_toTopOf="@+id/tvTempMin" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="min"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvTempMin"
+        app:layout_constraintEnd_toEndOf="@+id/textView5"
+        app:layout_constraintStart_toStartOf="@+id/tvTempMin" />
+
+
+    <TextView
+        android:id="@+id/tvSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="32dp"
+        android:text="water"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTempNow"
+        app:layout_constraintEnd_toStartOf="@+id/tvTempNow"
+        app:layout_constraintTop_toTopOf="@+id/tvTempNow" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5060827" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTimeMin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        tools:text="today"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/textView5"
+        app:layout_constraintStart_toStartOf="@+id/tvTempMin"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempMin" />
+
+    <TextView
+        android:id="@+id/tvTimeMax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        tools:text="today"
+        android:textColor="@color/displayText"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/textView6"
+        app:layout_constraintStart_toStartOf="@+id/tvTempMax"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempMax" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,12 +2,17 @@ package com.appdevgenie.aquapi.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -71,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child(DB_CHILD_AQUA_PI);
 
+        //Typeface custom_font = Typeface.createFromAsset(getAssets(),  "digital_it.ttf");
+
         tvIP = findViewById(R.id.tvIpAddress);
         tvPiStatus = findViewById(R.id.tvPiStatus);
         tvTime = findViewById(R.id.tvTime);
@@ -96,13 +103,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         //tbLight.setChecked(true);
         //ivTempLed = findViewById(R.id.ivTempLed);
-        Button bReboot = findViewById(R.id.bControlReboot);
+        /*Button bReboot = findViewById(R.id.bControlReboot);
         bReboot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openRebootDialog();
             }
-        });
+        });*/
 
         ConstraintLayout clRoomTemp = findViewById(R.id.includeRoomTemp);
         TextView tvRoomTitle = clRoomTemp.findViewById(R.id.tvTempTitle);
@@ -163,6 +170,30 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         infoArrayList = TemperatureInfo.createTempList();
 
         setupFirebaseListener();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.reboot_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.menu_reboot:
+                //openRebootDialog();
+                Intent intent = new Intent(MainActivity.this, TestDisplayActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /*@Override

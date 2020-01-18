@@ -13,4 +13,17 @@
         <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
     </style>
 
+    <!--<style name="btnStyleBlack" parent="@android:style/Widget.Button">
+        <item name="android:textSize">19sp</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:gravity">center|center_vertical</item>
+        <item name="android:layout_gravity">center|center_vertical</item>
+        <item name="android:background">@drawable/button_background_black</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+    </style>-->
+
 </resources>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/control_background">
+
+
+    <ToggleButton
+        android:id="@+id/tbWater"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/button_background_black"
+        android:checked="true"
+        android:textOn="water"
+        android:textOff="water"
+        android:textAlignment="center"
+        android:textColor="@color/displayText"
+        app:layout_constraintEnd_toStartOf="@+id/tbSystem"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ToggleButton
+        android:id="@+id/tbSystem"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/button_background_black"
+        android:button="@android:color/transparent"
+        android:checked="false"
+        android:textOn="system"
+        android:textOff="system"
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/tbWater"
+        app:layout_constraintEnd_toStartOf="@+id/tbRoom"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tbWater"
+        app:layout_constraintTop_toTopOf="@+id/tbWater" />
+
+    <ToggleButton
+        android:id="@+id/tbRoom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/button_background_black"
+        android:textOn="room"
+        android:textOff="room"
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/tbSystem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tbSystem"
+        app:layout_constraintTop_toTopOf="@+id/tbSystem" />
+
+    <ToggleButton
+        android:id="@+id/tbBypass"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/button_background_black"
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray"
+        android:textOff="bypass off"
+        android:textOn="bypass on"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tbWater"
+        app:layout_constraintStart_toStartOf="@+id/tbWater"
+        app:layout_constraintTop_toBottomOf="@+id/tbWater" />
+
+    <ToggleButton
+        android:id="@+id/tbLight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/button_background_black"
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray"
+        android:textOff="light off"
+        android:textOn="light on"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tbSystem"
+        app:layout_constraintStart_toStartOf="@+id/tbSystem"
+        app:layout_constraintTop_toBottomOf="@+id/tbSystem" />
+
+    <!--    <Button
+            android:id="@+id/button3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@drawable/button_background_black"
+            android:text="Button"
+            android:textAlignment="center"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/button2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button2"
+            app:layout_constraintTop_toTopOf="@+id/button2" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

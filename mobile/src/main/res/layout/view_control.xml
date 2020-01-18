@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@drawable/item_background">
 
-   <!-- <ImageView
+ <!-- <ImageView
         android:id="@+id/ivControl"
         android:layout_width="20dp"
         android:layout_height="20dp"
@@ -32,88 +32,93 @@
         app:layout_constraintTop_toTopOf="@+id/ivControl"
         tools:text="Control" />-->
 
-    <ImageView
-        android:id="@+id/ivControlBypass"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/tbBypass"
-        app:layout_constraintStart_toStartOf="@+id/tbBypass"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/led_off" />
+ <ImageView
+     android:id="@+id/ivControlBypass"
+     android:layout_width="20dp"
+     android:layout_height="20dp"
+     android:layout_marginStart="24dp"
+     android:layout_marginLeft="24dp"
+     android:layout_marginTop="16dp"
+     android:layout_marginBottom="16dp"
+     app:layout_constraintBottom_toTopOf="@+id/tbBypass"
+     app:layout_constraintStart_toStartOf="@+id/tbBypass"
+     app:layout_constraintTop_toTopOf="parent"
+     app:srcCompat="@drawable/led_off" />
 
-    <TextView
-        android:id="@+id/tvControlBypass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="Bypass"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-        android:textColor="@color/colorText"
-        app:fontFamily="sans-serif-lightOn"
-        app:layout_constraintBottom_toBottomOf="@+id/ivControlBypass"
-        app:layout_constraintStart_toEndOf="@+id/ivControlBypass"
-        app:layout_constraintTop_toTopOf="@+id/ivControlBypass" />
+ <TextView
+     android:id="@+id/tvControlBypass"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_marginStart="16dp"
+     android:layout_marginLeft="16dp"
+     android:text="Bypass"
+     android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+     android:textColor="@color/colorText"
+     app:fontFamily="sans-serif-lightOn"
+     app:layout_constraintBottom_toBottomOf="@+id/ivControlBypass"
+     app:layout_constraintStart_toEndOf="@+id/ivControlBypass"
+     app:layout_constraintTop_toTopOf="@+id/ivControlBypass" />
 
-    <ToggleButton
-        android:id="@+id/tbBypass"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/item_button_selector"
-        android:textColor="@color/colorText"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tbLight"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+ <ToggleButton
+     android:id="@+id/tbBypass"
+     android:layout_width="0dp"
+     android:layout_height="wrap_content"
+     android:layout_marginStart="16dp"
+     android:layout_marginLeft="16dp"
+     android:layout_marginEnd="8dp"
+     android:layout_marginRight="8dp"
+     android:layout_marginBottom="16dp"
+     android:background="@drawable/item_button_selector"
+     android:text="Button"
+     android:textColor="@color/colorText"
+     app:layout_constraintBottom_toBottomOf="parent"
+     app:layout_constraintEnd_toStartOf="@+id/tbLight"
+     app:layout_constraintHorizontal_bias="0.5"
+     app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/ivControlLight"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvControlBypass"
-        app:layout_constraintStart_toStartOf="@+id/tbLight"
-        app:layout_constraintTop_toTopOf="@+id/tvControlBypass"
-        app:srcCompat="@drawable/led_off" />
+ <ImageView
+     android:id="@+id/ivControlLight"
+     android:layout_width="20dp"
+     android:layout_height="20dp"
+     android:layout_marginStart="24dp"
+     android:layout_marginLeft="24dp"
+     app:layout_constraintBottom_toBottomOf="@+id/tvControlBypass"
+     app:layout_constraintStart_toStartOf="@+id/tbLight"
+     app:layout_constraintTop_toTopOf="@+id/tvControlBypass"
+     app:srcCompat="@drawable/led_off" />
 
-    <TextView
-        android:id="@+id/tvControlLight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:text="Light"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-        android:textColor="@color/colorText"
-        app:fontFamily="sans-serif-lightOn"
-        app:layout_constraintBottom_toBottomOf="@+id/ivControlLight"
-        app:layout_constraintStart_toEndOf="@+id/ivControlLight"
-        app:layout_constraintTop_toTopOf="@+id/ivControlLight" />
+ <TextView
+     android:id="@+id/tvControlLight"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_marginStart="16dp"
+     android:layout_marginLeft="16dp"
+     android:text="Light"
+     android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+     android:textColor="@color/colorText"
+     app:fontFamily="sans-serif-lightOn"
+     app:layout_constraintBottom_toBottomOf="@+id/ivControlLight"
+     app:layout_constraintStart_toEndOf="@+id/ivControlLight"
+     app:layout_constraintTop_toTopOf="@+id/ivControlLight" />
 
-    <ToggleButton
-        android:id="@+id/tbLight"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/item_button_selector"
-        android:textColor="@color/colorText"
-        android:text="ToggleButton"
-        app:layout_constraintEnd_toStartOf="@+id/bControlReboot"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tbBypass"
-        app:layout_constraintTop_toTopOf="@+id/tbBypass" />
+ <ToggleButton
+     android:id="@+id/tbLight"
+     android:layout_width="0dp"
+     android:layout_height="wrap_content"
+     android:layout_marginStart="8dp"
+     android:layout_marginLeft="8dp"
+     android:layout_marginEnd="16dp"
+     android:layout_marginRight="16dp"
+     android:background="@drawable/item_button_selector"
+     android:text="ToggleButton"
+     android:textColor="@color/colorText"
+     app:layout_constraintBottom_toBottomOf="@+id/tbBypass"
+     app:layout_constraintEnd_toEndOf="parent"
+     app:layout_constraintHorizontal_bias="0.5"
+     app:layout_constraintStart_toEndOf="@+id/tbBypass"
+     app:layout_constraintTop_toTopOf="@+id/tbBypass" />
 
-    <Button
+ <!--<Button
         android:id="@+id/bControlReboot"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -127,7 +132,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tbLight"
-        app:layout_constraintTop_toTopOf="@+id/tbLight" />
+        app:layout_constraintTop_toTopOf="@+id/tbLight" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
