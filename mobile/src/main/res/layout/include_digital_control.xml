@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/control_background">
 
 
@@ -65,18 +65,16 @@
         app:layout_constraintStart_toEndOf="@+id/tbSystem"
         app:layout_constraintTop_toTopOf="@+id/tbSystem" />
 
-    <ToggleButton
+<!--    <ToggleButton
         android:id="@+id/tbBypass"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="24dp"
         android:background="@drawable/button_background_black"
         android:textAlignment="center"
         android:textColor="@android:color/darker_gray"
         android:textOff="bypass off"
         android:textOn="bypass on"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tbWater"
         app:layout_constraintStart_toStartOf="@+id/tbWater"
         app:layout_constraintTop_toBottomOf="@+id/tbWater" />
@@ -86,16 +84,42 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="24dp"
         android:background="@drawable/button_background_black"
         android:textAlignment="center"
         android:textColor="@android:color/darker_gray"
         android:textOff="light off"
         android:textOn="light on"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tbSystem"
         app:layout_constraintStart_toStartOf="@+id/tbSystem"
-        app:layout_constraintTop_toBottomOf="@+id/tbSystem" />
+        app:layout_constraintTop_toBottomOf="@+id/tbSystem" />-->
+
+    <Button
+        android:id="@+id/bBypass"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/button_background_black"
+        android:text="bypass"
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tbWater"
+        app:layout_constraintStart_toStartOf="@+id/tbWater"
+        app:layout_constraintTop_toBottomOf="@+id/tbWater" />
+
+    <Button
+        android:id="@+id/bLight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background_black"
+        android:text="light"
+        android:textAlignment="center"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/bBypass"
+        app:layout_constraintEnd_toEndOf="@+id/tbSystem"
+        app:layout_constraintStart_toStartOf="@+id/tbSystem"
+        app:layout_constraintTop_toTopOf="@+id/bBypass" />
 
     <!--    <Button
             android:id="@+id/button3"

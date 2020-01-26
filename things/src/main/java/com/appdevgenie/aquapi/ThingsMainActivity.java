@@ -259,10 +259,23 @@ public class ThingsMainActivity extends Activity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 Control controlData = dataSnapshot.getValue(Control.class);
-                boolean bypass = false;
-                if (controlData != null) {
-                    bypass = controlData.isBypassOn();
-                }
+
+                /*if(controlData.isBypassToggle() || !controlData.isBypassToggle()){
+                    //Log.d(TAG, "onDataChanged: bypass " + controlData.isBypassOn());
+                    String byteString = "bypass";
+                    try {
+                        byte[] bytes = byteString.getBytes("UTF-8");
+                        usbService.write(bytes);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }*/
+
+                //Log.d(TAG, "onDataChanged: controlData bypass " + controlData.isBypassOn());
+                boolean bypass = controlData.isBypassOn();
+                /*if (controlData != null) {
+                    bypass = controlData.isBypassToggle();
+                }*/
                 //Log.d(TAG, "onDataChanged: bypass " + String.valueOf(bypass));
                 if (bypass) {
                     String byteString = "bypassOn";
@@ -302,7 +315,7 @@ public class ThingsMainActivity extends Activity {
                 }
 
                 boolean rebootPi = controlData.isRebootPi();
-                Log.d(TAG, "onDataChanged: reboot " + String.valueOf(rebootPi));
+                //Log.d(TAG, "onDataChanged: reboot " + String.valueOf(rebootPi));
                 if (rebootPi) {
                     //DeviceManager.getInstance().reboot();
                     //OR
@@ -494,13 +507,13 @@ public class ThingsMainActivity extends Activity {
                         final String dataStr = buffer.substring(0, index + 1).trim();
                         buffer = buffer.length() == index ? "" : buffer.substring(index + 1);
 
-                        //Log.i(TAG, dataStr.substring(0, 5));
+                        Log.i(TAG, "arduino print: " + dataStr);
                         try {
                             if (TextUtils.equals(dataStr.substring(0, 5), "temps")) {
                                 onTempDataReceived(dataStr);
                             }
                             if (TextUtils.equals(dataStr.substring(0, 6), "bypass")) {
-                                //Log.i(TAG, "Serial bypass data received: " + dataStr);
+                                Log.i(TAG, "Serial bypass data received: " + dataStr);
                                 updateBypass(dataStr);
                             }
                             if (TextUtils.equals(dataStr.substring(0, 5), "light")) {

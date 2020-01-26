@@ -1,16 +1,25 @@
 package com.appdevgenie.aquapi.activities;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.os.Handler;
 import android.text.format.DateFormat;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextClock;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -29,8 +38,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_AQUA_PI;
@@ -38,25 +49,32 @@ import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_CONTROL;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_STATUS;
 import static com.appdevgenie.aquapi.utils.Constants.DB_CHILD_TEMPERATURES;
 
-public class TestDisplayActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class TestDisplayActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
 
     private ToggleButton tbWater, tbSystem, tbRoom;
+    private Button bBypass, bLight;
     private boolean avoidRecursions = false;
-    private ToggleButton tbBypass, tbLight;
+    //private ToggleButton tbBypass, tbLight;
     private ArrayList<TemperatureInfo> infoArrayList;
     private Control control = new Control();
     private ProgressBar progressBar;
     private TextView tvIP, tvPiStatus, tvTime, tvArduinoStatus, tvNowTemp, tvMinTemp, tvMaxTemp, tvSelection, tvTimeMin, tvTimeMax;
-    private ImageView ivIp, ivPiStatus, ivArduinoStatus;
+    private ImageView ivIp, ivPiStatus, ivArduinoStatus, ivBypass, ivLight;
+    private TextView tvLight, tvBypass;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_digital_display);
+
+        init();
+    }
+
+    private void init() {
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child(DB_CHILD_AQUA_PI);
@@ -75,6 +93,8 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
         tvIP = findViewById(R.id.tvIpAddress);
         tvPiStatus = findViewById(R.id.tvPiStatus);
         tvTime = findViewById(R.id.tvTime);
+        tvBypass = findViewById(R.id.tvBypass);
+        tvLight = findViewById(R.id.tvLight);
         tvArduinoStatus = findViewById(R.id.tvArduinoStatus);
         tvNowTemp = findViewById(R.id.tvTempNow);
         tvMinTemp = findViewById(R.id.tvTempMin);
@@ -82,16 +102,23 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
         tvSelection = findViewById(R.id.tvSelection);
         tvTimeMin = findViewById(R.id.tvTimeMin);
         tvTimeMax = findViewById(R.id.tvTimeMax);
+        TextClock tvClock = findViewById(R.id.tvClock);
+        tvClock.setTypeface(custom_font);
+        /*Date today = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:MM", Locale.UK);
+        tvClock.setText(formatter.format(today));*/
 
         ivIp = findViewById(R.id.ivIpAddress);
         ivPiStatus = findViewById(R.id.ivPiStatus);
         ivArduinoStatus = findViewById(R.id.ivArduinoStatus);
+        ivBypass = findViewById(R.id.ivBypass);
+        ivLight = findViewById(R.id.ivLight);
 
         ConstraintLayout c2 = findViewById(R.id.include_digital_control);
         tbWater = c2.findViewById(R.id.tbWater);
         tbSystem = c2.findViewById(R.id.tbSystem);
         tbRoom = c2.findViewById(R.id.tbRoom);
-        tbBypass = findViewById(R.id.tbBypass);
+        /*tbBypass = findViewById(R.id.tbBypass);
         tbBypass.setOnCheckedChangeListener(this);
         tbLight = findViewById(R.id.tbLight);
         tbLight.setOnCheckedChangeListener(this);
@@ -101,7 +128,7 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
         } else {
             tbLight.setClickable(true);
             tbLight.setEnabled(true);
-        }
+        }*/
         //r0.setTypeface(custom_font);
         //r1.setTypeface(custom_font);
         //r2.setTypeface(custom_font);
@@ -109,9 +136,58 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
         tbSystem.setOnCheckedChangeListener(this);
         tbRoom.setOnCheckedChangeListener(this);
 
+        bBypass = findViewById(R.id.bBypass);
+        bBypass.setOnClickListener(this);
+        bLight = findViewById(R.id.bLight);
+        bLight.setOnClickListener(this);
+        /*bBypass.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.performClick();
+
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Toast.makeText(TestDisplayActivity.this, "bypass down", Toast.LENGTH_LONG).show();
+                        control.setBypassOn(Boolean.TRUE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        Toast.makeText(TestDisplayActivity.this, "up", Toast.LENGTH_LONG).show();
+                        control.setBypassOn(Boolean.FALSE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                        break;
+                }
+
+                return false;
+            }
+        });*/
+
         infoArrayList = TemperatureInfo.createTempList();
 
         setupFirebaseListener();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.reboot_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.menu_reboot:
+                openRebootDialog();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void setupFirebaseListener() {
@@ -192,9 +268,9 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
                                                     break;
                                             }
 
-                                            tvNowTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(0).getTemp()));
-                                            tvMinTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(0).getTempMin()));
-                                            tvMaxTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(0).getTempMax()));
+                                            tvNowTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(0).getTemp()));
+                                            tvMinTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(0).getTempMin()));
+                                            tvMaxTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(0).getTempMax()));
                                             tvTimeMin.setText(getFormattedDate(infoArrayList.get(0).getMinTimeStamp()));
                                             tvTimeMax.setText(getFormattedDate(infoArrayList.get(0).getMaxTimeStamp()));
                                         }
@@ -213,11 +289,24 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                 Control controlData = dataSnapshot.getValue(Control.class);
-                                control.setLightOn(controlData.isLightOn());
-                                tbLight.setChecked(controlData.isLightOn());
-
                                 control.setBypassOn(controlData.isBypassOn());
-                                tbBypass.setChecked(controlData.isBypassOn());
+                                //tbBypass.setChecked(controlData.isBypassOn());
+                                if(controlData.isBypassOn()) {
+                                    tvBypass.setText("Bypass On");
+                                    ivBypass.setBackgroundResource(R.drawable.circle_on);
+                                }else{
+                                    tvBypass.setText("Bypass Off");
+                                    ivBypass.setBackgroundResource(R.drawable.circle_off);
+                                }
+                                control.setLightOn(controlData.isLightOn());
+                                //tbLight.setChecked(controlData.isLightOn());
+                                if(controlData.isLightOn()) {
+                                    tvLight.setText("Light On");
+                                    ivLight.setBackgroundResource(R.drawable.circle_on);
+                                }else{
+                                    tvLight.setText("Light Off");
+                                    ivLight.setBackgroundResource(R.drawable.circle_off);
+                                }
                             }
 
                             @Override
@@ -263,13 +352,13 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
         if(compoundButton.getId() == R.id.tbBypass || compoundButton.getId() == R.id.tbLight){
-            if (!tbBypass.isChecked()) {
+            /*if (!tbBypass.isChecked()) {
                 tbLight.setClickable(false);
                 tbLight.setEnabled(false);
             } else {
                 tbLight.setClickable(true);
                 tbLight.setEnabled(true);
-            }
+            }*/
         }else {
 
             if (avoidRecursions) return;
@@ -303,9 +392,9 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
                 if (tbWater.isChecked()) {
                     tvSelection.setText("water");
                     tbWater.setTextColor(Color.CYAN);
-                    tvNowTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(0).getTemp()));
-                    tvMinTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(0).getTempMin()));
-                    tvMaxTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(0).getTempMax()));
+                    tvNowTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(0).getTemp()));
+                    tvMinTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(0).getTempMin()));
+                    tvMaxTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(0).getTempMax()));
                     tvTimeMin.setText(getFormattedDate(infoArrayList.get(0).getMinTimeStamp()));
                     tvTimeMax.setText(getFormattedDate(infoArrayList.get(0).getMaxTimeStamp()));
                 }
@@ -315,9 +404,9 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
                 if (tbSystem.isChecked()) {
                     tvSelection.setText("system");
                     tbSystem.setTextColor(Color.CYAN);
-                    tvNowTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(1).getTemp()));
-                    tvMinTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(1).getTempMin()));
-                    tvMaxTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(1).getTempMax()));
+                    tvNowTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(1).getTemp()));
+                    tvMinTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(1).getTempMin()));
+                    tvMaxTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(1).getTempMax()));
                     tvTimeMin.setText(getFormattedDate(infoArrayList.get(1).getMinTimeStamp()));
                     tvTimeMax.setText(getFormattedDate(infoArrayList.get(1).getMaxTimeStamp()));
                 }
@@ -327,22 +416,22 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
                 if (tbRoom.isChecked()) {
                     tvSelection.setText("room");
                     tbRoom.setTextColor(Color.CYAN);
-                    tvNowTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(2).getTemp()));
-                    tvMinTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(2).getTempMin()));
-                    tvMaxTemp.setText(String.format(Locale.getDefault(), "%.2f", infoArrayList.get(2).getTempMax()));
+                    tvNowTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(2).getTemp()));
+                    tvMinTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(2).getTempMin()));
+                    tvMaxTemp.setText(String.format(Locale.UK, "%.2f", infoArrayList.get(2).getTempMax()));
                     tvTimeMin.setText(getFormattedDate(infoArrayList.get(2).getMinTimeStamp()));
                     tvTimeMax.setText(getFormattedDate(infoArrayList.get(2).getMaxTimeStamp()));
                 }
                 break;
 
-            case R.id.tbBypass:
+           /* case R.id.tbBypass:
                 if (tbBypass.isChecked()) {
                     tbBypass.setTextColor(Color.CYAN);
                 }else{
                     tbBypass.setTextColor(Color.LTGRAY);
                 }
-                //control.setBypassOn(b);
-                //databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                control.setBypassToggle(b);
+                databaseReference.child(DB_CHILD_CONTROL).setValue(control);
                 break;
 
             case R.id.tbLight:
@@ -351,10 +440,72 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
                 }else{
                     tbLight.setTextColor(Color.LTGRAY);
                 }
-                //control.setLightOn(b);
-                //databaseReference.child(DB_CHILD_CONTROL).setValue(control);
-                break;
+                control.setLightOn(b);
+                databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                break;*/
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void openRebootDialog() {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TestDisplayActivity.this);
+        View layoutView = getLayoutInflater().inflate(R.layout.dialog_reboot, null);
+
+        Button bRebootPi = layoutView.findViewById(R.id.bRebootPi);
+        Button bRebootArduino = layoutView.findViewById(R.id.bRebootArduino);
+
+        dialogBuilder.setView(layoutView);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+
+        bRebootPi.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.performClick();
+
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Toast.makeText(TestDisplayActivity.this, "Resetting Raspberry Pi", Toast.LENGTH_LONG).show();
+                        control.setRebootPi(Boolean.TRUE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        //Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
+                        control.setRebootPi(Boolean.FALSE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                        break;
+                }
+
+                return false;
+            }
+        });
+
+        bRebootArduino.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.performClick();
+
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Toast.makeText(TestDisplayActivity.this, "Resetting Arduino", Toast.LENGTH_LONG).show();
+                        control.setResetArduino(Boolean.TRUE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        //Toast.makeText(MainActivity.this, "up", Toast.LENGTH_LONG).show();
+                        control.setResetArduino(Boolean.FALSE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                        break;
+                }
+
+                return false;
+            }
+        });
     }
 
     private String getFormattedDate(long timestamp) {
@@ -374,6 +525,42 @@ public class TestDisplayActivity extends AppCompatActivity implements CompoundBu
             return DateFormat.format(dateTimeFormatString, calendar).toString();
         } else {
             return DateFormat.format("MMM dd yyyy, HH:mm", calendar).toString();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch( view.getId()){
+            case R.id.bBypass:
+                //control.setBypassToggle(Boolean.TRUE);
+
+                if(control.isBypassOn()){
+                    control.setBypassOn(Boolean.FALSE);
+                }else{
+                    control.setBypassOn(Boolean.TRUE);
+                }
+
+                databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+
+                /*Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        control.setBypassToggle(Boolean.FALSE);
+                        databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                    }
+                },1000);*/
+                break;
+
+            case R.id.bLight:
+                if(control.isLightOn()){
+                    control.setLightOn(Boolean.FALSE);
+                }else{
+                    control.setLightOn(Boolean.TRUE);
+                }
+
+                databaseReference.child(DB_CHILD_CONTROL).setValue(control);
+                break;
         }
     }
 }
